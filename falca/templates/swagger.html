@@ -1,0 +1,36 @@
+<%!
+    from falca.compat import json
+%>
+
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <title>${title}</title>
+    <link href="${swagger_ui_url}swagger-ui.css" rel="stylesheet" type="text/css"/>
+  </head>
+
+ <body>
+
+   <div id="swagger-ui-container"></div>
+
+   <script src="${swagger_ui_url}swagger-ui-standalone-preset.js"></script>
+   <script src="${swagger_ui_url}swagger-ui-bundle.js"></script>
+   <script>
+
+     config = {
+       url: "${ openapi_url }",
+       dom_id: '#swagger-ui-container'
+     }
+
+     var override_config = ${ swagger_ui_config | json.dumps };
+     for (var attrname in override_config) { config[attrname] = override_config[attrname]; }
+
+     window.onload = function() {
+       window.ui = SwaggerUIBundle(config)
+     }
+   </script>
+
+ </body>
+
+</html>
