@@ -1,8 +1,10 @@
+import inspect
 import os
 import pkgutil
 import sys
 import types
 from importlib import import_module
+from typing import Callable, Dict
 
 import falcon
 
@@ -75,3 +77,18 @@ def get_root_path(import_name):
 
 def isclass(obj: object):
     return isinstance(obj, type) or type(obj) is not types.FunctionType
+
+
+def get_argnotations(func: Callable) -> Dict[str, type]:
+    sig = inspect.signature(func)
+    params = {}
+    for p in sig.parameters.values():
+        name = p.name
+        if name == "self":
+            continue
+
+        atype = p._annotation
+        if atype is not inspect._empty:
+            params[name] = atype
+
+    return params

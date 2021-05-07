@@ -14,16 +14,16 @@ class FileStorage:
         self.content_type = content_type
         self.headers = headers
 
+    def read(self, size=-1):
+        return self.media.stream.read(size)
+
     def save(self, dst: TextIO, size: int = 16384):
-        data = self.media.stream.read(size)
+        data = self.read(size)
         dst.write(data)
 
 
 class FileParserMiddleware(Middleware):
     def process_request(self, req, resp):
-        if req.content_type != MEDIA_MULTIPART:
-            return
-
         files = {}
         form: List[BodyPart] = req.get_media()
         for part in form:

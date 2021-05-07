@@ -15,11 +15,6 @@ class Scaffold:
     plugin_manager_class = PluginManager
     router_class = Router
     media_handlers = {falcon.MEDIA_JSON: JSONHandler}
-    default_settings = {
-        "STATICFILES": [],
-        "TEMPLATES_DIR": [],
-        "PLUGINS": {"openapi": "falca.openapi.OpenAPI"},
-    }
 
     def __init__(
         self,
@@ -27,19 +22,19 @@ class Scaffold:
         static_folders=[("/static", "static")],
         template_folders=["templates"],
         root_path=None,
-        **kwds
+        **kwds,
     ) -> None:
         self.import_name = import_name
         router = self.router_class(self)
         kwds["router"] = router
         super().__init__(**kwds)
         self.settings = self.settings_class()
-        self.settings.from_dict(self.default_settings)
         self.static_folders = static_folders
         if root_path is None:
             root_path = get_root_path(import_name)
 
         self.root_path = root_path
+        self.routers = []
         templates = []
         for t in template_folders:
             if not t.startswith("/"):
@@ -59,3 +54,10 @@ class Scaffold:
                 folder = os.path.join(root_path, folder)
 
             self.add_static_route(prefix, folder)
+
+    def add_router(self, router: Router):
+        assert isinstance(
+            router, Router
+        ), f"Router {router!r} must be an instance object of falca.router.Router"
+        router.app = self
+        self.routers.append(router)

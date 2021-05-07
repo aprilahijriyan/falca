@@ -9,11 +9,11 @@ license = "MIT"
 python = "^3.7"
 falcon = "^3.0.0"
 apispec = "^4.4.0"
-webargs = "^8.0.0"
 Mako = "^1.1.4"
 six = "^1.15.0"
 orjson = {version = "^3.5.2", extras = ["full"]}
 python-rapidjson = {version = "^1.0", extras = ["full"]}
+marshmallow = "^3.11.1"
 
 [tool.poetry.dev-dependencies]
 ipython = "^7.22.0"
@@ -24,3 +24,6 @@ pre-commit = "^2.12.1"
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.isort]
+profile="black"
