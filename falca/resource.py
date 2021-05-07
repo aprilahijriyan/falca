@@ -13,6 +13,7 @@ class ResourceMeta(type):
                 view = falcon.before(actions.before)(actions.flavor(func))
                 attrs[name] = view
 
+        print("Resource:", name, attrs)
         klass = type(name, bases, attrs)
         return klass
 
@@ -40,3 +41,6 @@ class Resource(metaclass=ResourceMeta):
         t = self.template_lookup.get_template(template)
         html = t.render(**kwds)
         return html
+
+    # def __call__(self) -> Any:
+    #     return self

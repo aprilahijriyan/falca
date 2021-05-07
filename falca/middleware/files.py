@@ -25,16 +25,21 @@ class FileStorage:
 class FileParserMiddleware(Middleware):
     def process_request(self, req, resp):
         files = {}
-        form: List[BodyPart] = req.get_media()
-        for part in form:
-            if part.content_type == MEDIA_MULTIPART:
-                media = part.get_media()
-                name = part.name
-                storage = FileStorage(
-                    media, part.secure_filename, name, part.content_type, part._headers
-                )
-                data = files.get(name, [])
-                data.append(storage)
-                files[name] = data
+        if req.content_type == MEDIA_MULTIPART:
+            form: List[BodyPart] = req.get_media()
+            for part in form:
+                if part.content_type == MEDIA_MULTIPART:
+                    media = part.get_media()
+                    name = part.name
+                    storage = FileStorage(
+                        media,
+                        part.secure_filename,
+                        name,
+                        part.content_type,
+                        part._headers,
+                    )
+                    data = files.get(name, [])
+                    data.append(storage)
+                    files[name] = data
 
         req.files = files

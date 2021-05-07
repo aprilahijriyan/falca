@@ -4,9 +4,13 @@ from falcon.asgi import App as ASGIBase
 from .scaffold import Scaffold
 
 
-class WSGI(Scaffold, WSGIBase):
-    pass
+class WSGI(WSGIBase, Scaffold):
+    def __init__(self, import_name, **kwds):
+        super().__init__(**kwds)
+        Scaffold.__init__(self, import_name, **kwds)
 
 
-class ASGI(Scaffold, ASGIBase):
-    pass
+class ASGI(ASGIBase, Scaffold):
+    def __init__(self, import_name, **kwds):
+        super().__init__(**kwds)
+        Scaffold.__init__(self, import_name, **kwds)

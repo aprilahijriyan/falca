@@ -5,6 +5,9 @@ from mako.lookup import TemplateLookup
 
 from .helpers import get_root_path
 from .media.json import JSONHandler, JSONHandlerWS
+from .middleware.files import FileParserMiddleware
+from .middleware.forms import FormParserMiddleware
+from .middleware.json import JsonParserMiddleware
 from .plugin_manager import PluginManager
 from .router import Router
 from .settings import Settings
@@ -25,9 +28,7 @@ class Scaffold:
         **kwds,
     ) -> None:
         self.import_name = import_name
-        router = self.router_class(self)
-        kwds["router"] = router
-        super().__init__(**kwds)
+        self._router = self.router_class(self)
         self.settings = self.settings_class()
         self.static_folders = static_folders
         if root_path is None:
@@ -45,15 +46,24 @@ class Scaffold:
         self.template_folders = templates
         self.template_lookup = TemplateLookup(templates)
         self.plugin_manager = self.plugin_manager_class(self)
-        # rfc: https://falcon.readthedocs.io/en/latest/api/media.html#replacing-the-default-handlers
-        self.req_options.media_handlers.update(self.media_handlers)
-        self.resp_options.media_handlers.update(self.media_handlers)
-        self.ws_options.media_handlers[falcon.WebSocketPayloadType.TEXT] = JSONHandlerWS
         for prefix, folder in static_folders:
             if not folder.startswith("/"):
                 folder = os.path.join(root_path, folder)
 
             self.add_static_route(prefix, folder)
+
+        # rfc: https://falcon.readthedocs.io/en/latest/api/media.html#replacing-the-default-handlers
+        self.req_options.media_handlers.update(self.media_handlers)
+        self.resp_options.media_handlers.update(self.media_handlers)
+        if hasattr(self, "ws_options"):
+            self.ws_options.media_handlers[
+                falcon.WebSocketPayloadType.TEXT
+            ] = JSONHandlerWS
+
+        self.add_middleware(
+            [FormParserMiddleware(), JsonParserMiddleware(), FileParserMiddleware()]
+        )
+        self.set_error_serializer(self.error_serializer)
 
     def add_router(self, router: Router):
         assert isinstance(
@@ -61,3 +71,8 @@ class Scaffold:
         ), f"Router {router!r} must be an instance object of falca.router.Router"
         router.app = self
         self.routers.append(router)
+
+    def error_serializer(self, req, resp, exc):
+        resp.content_type = falcon.MEDIA_JSON
+        resp.data = exc.to_json()
+        resp.append_header("Vary", "Accept")

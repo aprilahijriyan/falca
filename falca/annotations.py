@@ -27,6 +27,15 @@ class Annotation(metaclass=ABCMeta):
         """
 
 
+class Body(Annotation):
+    def load(self, request: Request):
+        json = request.json
+        self.data = self.validate(json)
+
+    def validate(self, data: dict):
+        pass
+
+
 class Query(Annotation):
     def load(self, request: Request):
         query = request.params

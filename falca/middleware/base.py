@@ -27,7 +27,7 @@ class Middleware(object):
                 the request.
         """
 
-    def process_response(self, req, resp, resource):
+    def process_response(self, req, resp, resource, *args):
         """Post-processing of the response (after routing).
 
         Args:
