@@ -29,8 +29,14 @@ class Resource(metaclass=ResourceMeta):
     def make_response(
         self, data: Any, content_type, *, status=falcon.HTTP_200, headers={}
     ):
+        app = self.request.context.app
+        media_handlers = app.media_handlers
+        if content_type in media_handlers:
+            self.response.media = data
+        else:
+            self.response.text = data
+
         self.response.content_type = content_type
-        self.response.media = data
         self.response.status = status
         self.response.headers.update(headers)
 
