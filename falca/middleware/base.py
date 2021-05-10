@@ -9,6 +9,8 @@ class Middleware(object):
     rfc: https://falcon.readthedocs.io/en/0.3.0.1/api/middleware.html#middleware-components
     """
 
+    content_type = None
+
     def __init__(self, app: App = None) -> None:
         self.app = app
         super().__init__()
@@ -46,3 +48,12 @@ class Middleware(object):
                 routed. May be None if no route was found
                 for the request.
         """
+
+    def is_valid_content_type(self, req: Request):
+        if (
+            self.content_type
+            and req.content_type
+            and self.content_type in req.content_type
+        ):
+            return True
+        return False
