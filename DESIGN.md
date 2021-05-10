@@ -53,32 +53,18 @@ To return a response you can use the `html()` or `json()` methods found in Resou
 
 Falca handles the request body a little more aesthetic xD. You can handle query, body, forms, files and headers using the notations `Query`, `Body`, `Form`, `File`, `Header` in` falca.annotations`.
 
-Example:
-
-```python
-from falca.resource import Resource
-from falca.annotations import Query
-from falca.schema import Schema
-from marshmallow import fields
-
-class LimitOffsetSchema(Schema):
-    limit = fields.Int()
-    offset = fields.Int()
-
-limit_offset_query = Query(LimitOffsetSchema())
-
-class Article(Resource):
-    def on_get(self, query: limit_offset_query):
-        limit = query.data.get("limit")
-        offset = query.data.get("offset")
-        data = list(range(1, 11))[limit:offset]
-        self.json(data)
-```
+For examples you can find them in [examples/app](https://github.com/aprilahijriyan/falca/tree/main/examples/app)
 
 # Project Layouts
 
-You can find the project layout in the `examples/app` directory.
+You can find the project layout in the [examples/app](https://github.com/aprilahijriyan/falca/tree/main/examples/app) directory.
 
 # CLI
 
 This feature is similar to the flask command line. Maybe the name for the command is **falca**.
+
+The features that will be in this command are:
+
+* Support for running applications
+* Support to display a list of endpoint
+* Support for adding commands via [entry_points](https://setuptools.readthedocs.io/en/latest/userguide/entry_point.html)
