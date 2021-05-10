@@ -27,7 +27,12 @@ class Resource(metaclass=ResourceMeta):
     response: falcon.Response = None
 
     def make_response(
-        self, data: Any, content_type, *, status=falcon.HTTP_200, headers={}
+        self,
+        data: Any,
+        content_type: str,
+        *,
+        status: str = falcon.HTTP_200,
+        headers: dict = {}
     ):
         app = self.request.context.app
         media_handlers = app.media_handlers

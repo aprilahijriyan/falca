@@ -1,14 +1,19 @@
+from falcon.app import App
+from falcon.request import Request
+from falcon.response import Response
+
+
 class Middleware(object):
     """Middleware Component.
 
     rfc: https://falcon.readthedocs.io/en/0.3.0.1/api/middleware.html#middleware-components
     """
 
-    def __init__(self, app=None) -> None:
+    def __init__(self, app: App = None) -> None:
         self.app = app
         super().__init__()
 
-    def process_request(self, req, resp):
+    def process_request(self, req: Request, resp: Response):
         """Process the request before routing it.
 
         Args:
@@ -18,7 +23,7 @@ class Middleware(object):
                 the on_* responder.
         """
 
-    def process_resource(self, req, resp, resource, *args):
+    def process_resource(self, req: Request, resp: Response, resource: object, *args):
         """Process the request after routing.
 
         Args:
@@ -31,7 +36,7 @@ class Middleware(object):
                 the request.
         """
 
-    def process_response(self, req, resp, resource, *args):
+    def process_response(self, req: Request, resp: Response, resource: object, *args):
         """Post-processing of the response (after routing).
 
         Args:

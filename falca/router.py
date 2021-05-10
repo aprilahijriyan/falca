@@ -1,8 +1,9 @@
+from falcon.app import App
 from falcon.routing import CompiledRouter
 
 
 class Router(CompiledRouter):
-    def __init__(self, app=None, *, url_prefix: str = None):
+    def __init__(self, app: App = None, *, url_prefix: str = None):
         self.app = app
         self.url_prefix = url_prefix
         super().__init__()
@@ -13,7 +14,7 @@ class Router(CompiledRouter):
 
         return super().add_route(uri_template, resource, **kwargs)
 
-    def find(self, uri, req=None):
+    def find(self, uri: str, req=None):
         resource = super().find(uri, req=req)
         if resource is None:
             for router in self.app.routers:

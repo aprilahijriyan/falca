@@ -1,4 +1,5 @@
 import os
+from typing import List, Tuple
 
 import falcon
 from mako.lookup import TemplateLookup
@@ -23,10 +24,10 @@ class Scaffold:
 
     def __init__(
         self,
-        import_name,
-        static_folders=[("/static", "static")],
-        template_folders=["templates"],
-        root_path=None,
+        import_name: str,
+        static_folders: List[Tuple[str, str]] = [("/static", "static")],
+        template_folders: List[str] = ["templates"],
+        root_path: str = None,
         **kwds,
     ) -> None:
         self.import_name = import_name
@@ -84,7 +85,7 @@ class Scaffold:
         resp.data = exc.to_json()
 
     def marshmallow_handler(
-        self, req: falcon.Request, resp: falcon.Response, exc: ValidationError, params
+        self, req: falcon.Request, resp: falcon.Response, exc: ValidationError, *args
     ):
         resp.status = falcon.HTTP_422
         resp.content_type = falcon.MEDIA_JSON

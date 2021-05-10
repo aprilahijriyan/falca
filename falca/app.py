@@ -5,12 +5,12 @@ from .scaffold import Scaffold
 
 
 class WSGI(WSGIBase, Scaffold):
-    def __init__(self, import_name, **kwds):
+    def __init__(self, import_name: str, **kwds):
         super().__init__(**kwds)
         Scaffold.__init__(self, import_name, **kwds)
 
 
 class ASGI(ASGIBase, Scaffold):
-    def __init__(self, import_name, **kwds):
+    def __init__(self, import_name: str, **kwds):
         super().__init__(**kwds)
         Scaffold.__init__(self, import_name, **kwds)

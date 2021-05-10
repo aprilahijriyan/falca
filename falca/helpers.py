@@ -12,7 +12,7 @@ from falcon.request import Request
 from .exceptions import PluginNotFound
 
 
-def abort(code, **kwagrs):
+def abort(code: int, **kwagrs):
     status = falcon.code_to_http_status(code)
     raise falcon.HTTPError(status, **kwagrs)
 
@@ -33,7 +33,7 @@ def extract_plugins(obj: object) -> list:
     return plugins
 
 
-def get_root_path(import_name):
+def get_root_path(import_name: str):
     """
     This is taken from https://github.com/pallets/flask/blob/master/src/flask/scaffold.py#L699
     """

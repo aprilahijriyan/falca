@@ -1,9 +1,12 @@
+from falcon.request import Request
+from falcon.response import Response
+
 from ..helpers import get_plugins
 from .base import Middleware
 
 
 class ResourceMiddleware(Middleware):
-    def process_resource(self, req, resp, resource, *args):
+    def process_resource(self, req: Request, resp: Response, resource: object, *args):
         if resource is None:
             return
 
