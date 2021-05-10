@@ -4,7 +4,7 @@ class Middleware(object):
     rfc: https://falcon.readthedocs.io/en/0.3.0.1/api/middleware.html#middleware-components
     """
 
-    def __init__(self, app) -> None:
+    def __init__(self, app=None) -> None:
         self.app = app
         super().__init__()
 

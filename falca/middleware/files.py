@@ -38,8 +38,11 @@ class FileParserMiddleware(Middleware):
                         part.content_type,
                         part._headers,
                     )
-                    data = files.get(name, [])
-                    data.append(storage)
+                    data = files.get(name)
+                    if data:
+                        data = [data]
+                        data.append(storage)
+
                     files[name] = data
 
         req.files = files

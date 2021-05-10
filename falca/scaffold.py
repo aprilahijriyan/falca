@@ -2,8 +2,9 @@ import os
 
 import falcon
 from mako.lookup import TemplateLookup
+from marshmallow.exceptions import ValidationError
 
-from .helpers import get_root_path
+from .helpers import get_http_description, get_root_path
 from .media.json import JSONHandler, JSONHandlerWS
 from .middleware.files import FileParserMiddleware
 from .middleware.forms import FormParserMiddleware
@@ -62,14 +63,12 @@ class Scaffold:
                 falcon.WebSocketPayloadType.TEXT
             ] = JSONHandlerWS
 
-        self.add_middleware(ResourceMiddleware)
-        self.add_middleware(FormParserMiddleware)
-        self.add_middleware(JsonParserMiddleware)
-        self.add_middleware(FileParserMiddleware)
+        self.add_middleware(ResourceMiddleware(self))
+        self.add_middleware(FormParserMiddleware(self))
+        self.add_middleware(JsonParserMiddleware(self))
+        self.add_middleware(FileParserMiddleware(self))
         self.set_error_serializer(self.error_serializer)
-
-    def add_middleware(self, middleware):
-        super().add_middleware([middleware])
+        self.add_error_handler(ValidationError, self.marshmallow_handler)
 
     def add_router(self, router: Router):
         assert isinstance(
@@ -78,6 +77,18 @@ class Scaffold:
         router.app = self
         self.routers.append(router)
 
-    def error_serializer(self, req, resp, exc):
+    def error_serializer(
+        self, req: falcon.Request, resp: falcon.Response, exc: falcon.HTTPError
+    ):
         resp.content_type = falcon.MEDIA_JSON
         resp.data = exc.to_json()
+
+    def marshmallow_handler(
+        self, req: falcon.Request, resp: falcon.Response, exc: ValidationError, params
+    ):
+        resp.status = falcon.HTTP_422
+        resp.content_type = falcon.MEDIA_JSON
+        resp.media = {
+            "status": {"code": 422, "detail": get_http_description(422)},
+            "data": exc.messages,
+        }

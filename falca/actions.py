@@ -10,7 +10,6 @@ from .helpers import extract_plugins, get_argnotations, isclass
 
 
 def before(req: Request, resp: Response, resource: object, params: dict):
-    print("before hook")
     plugins = {}
     manager = req.context.app.plugin_manager
     for name in extract_plugins(resource):
@@ -30,7 +29,6 @@ def before(req: Request, resp: Response, resource: object, params: dict):
 def flavor(func: Callable):
     @wraps(func)
     def decorated(*args, **kwargs):
-        print("Decorated:", args)
         req_object = args[0]
         args = args[2:]  # without req, resp
         params = get_argnotations(func)

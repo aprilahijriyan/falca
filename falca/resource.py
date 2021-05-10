@@ -26,7 +26,7 @@ class Resource(metaclass=ResourceMeta):
     request: falcon.Request = None
     response: falcon.Response = None
 
-    def build_response(
+    def make_response(
         self, data: Any, content_type, *, status=falcon.HTTP_200, headers={}
     ):
         self.response.content_type = content_type
@@ -35,11 +35,11 @@ class Resource(metaclass=ResourceMeta):
         self.response.headers.update(headers)
 
     def json(self, payload: Union[dict, list], **kwds):
-        self.build_response(payload, falcon.MEDIA_JSON, **kwds)
+        self.make_response(payload, falcon.MEDIA_JSON, **kwds)
 
     def html(self, template: str, context={}, **kwds):
         html = self.render(template, **context)
-        self.build_response(html, falcon.MEDIA_HTML, **kwds)
+        self.make_response(html, falcon.MEDIA_HTML, **kwds)
 
     def render(self, template: str, **kwds):
         t = self.request.context.templates.get_template(template)
