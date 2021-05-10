@@ -8,6 +8,7 @@ from .media.json import JSONHandler, JSONHandlerWS
 from .middleware.files import FileParserMiddleware
 from .middleware.forms import FormParserMiddleware
 from .middleware.json import JsonParserMiddleware
+from .middleware.resource import ResourceMiddleware
 from .plugin_manager import PluginManager
 from .router import Router
 from .settings import Settings
@@ -29,6 +30,7 @@ class Scaffold:
     ) -> None:
         self.import_name = import_name
         self._router = self.router_class(self)
+        self._router_search = self._router.find
         self.settings = self.settings_class()
         self.static_folders = static_folders
         if root_path is None:
@@ -60,10 +62,14 @@ class Scaffold:
                 falcon.WebSocketPayloadType.TEXT
             ] = JSONHandlerWS
 
-        self.add_middleware(
-            [FormParserMiddleware(), JsonParserMiddleware(), FileParserMiddleware()]
-        )
+        self.add_middleware(ResourceMiddleware)
+        self.add_middleware(FormParserMiddleware)
+        self.add_middleware(JsonParserMiddleware)
+        self.add_middleware(FileParserMiddleware)
         self.set_error_serializer(self.error_serializer)
+
+    def add_middleware(self, middleware):
+        super().add_middleware([middleware])
 
     def add_router(self, router: Router):
         assert isinstance(
@@ -75,4 +81,3 @@ class Scaffold:
     def error_serializer(self, req, resp, exc):
         resp.content_type = falcon.MEDIA_JSON
         resp.data = exc.to_json()
-        resp.append_header("Vary", "Accept")

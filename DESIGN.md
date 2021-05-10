@@ -34,10 +34,10 @@ The falcon application itself is designed to be as minimal as possible and we wi
 
 # Global Attributes
 
-In some frameworks like flask there is a global variable `current_app` which is a local proxy that can be used when the flask context app has been pushed. However, in the falcon framework is very confusing, to add functionality like that. This is the best idea I have in mind :). We will add some attributes to the resource via hook. These are the attributes that will be added:
+In some frameworks like flask there is a global variable `current_app` which is a local proxy that can be used when the flask context app has been pushed. However, in the falcon framework is very confusing, to add functionality like that. This is the best idea I have in mind :). We will add some attributes to the resource via middleware. These are the attributes that will be added:
 
 * `request.context.app` => App instance object.
-* `self.template_lookup` => Mako template lookup.
+* `request.context.templates` => Mako template lookup.
 * `self.request` => falcon.Request object
 * `self.response` => falcon.Response object
 

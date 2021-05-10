@@ -15,10 +15,7 @@ limit_offset_query = Query(LimitOffsetSchema())
 
 class Article(Resource):
     def on_get(self, query: limit_offset_query):
-        limit = query.data.get("limit")
-        offset = query.data.get("offset")
-        data = list(range(1, 11))[limit:offset]
-        self.json({"data": data})
+        self.json(query.data)
 
-    def on_post(self, id):
+    def on_post(self):
         self.json({"data": 1})

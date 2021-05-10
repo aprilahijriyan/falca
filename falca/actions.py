@@ -4,11 +4,9 @@ from typing import Callable
 from falcon.request import Request
 from falcon.response import Response
 
-from .annotations import File, Form, Header, Query
+from .annotations import Annotation
 from .exceptions import PluginNotFound
 from .helpers import extract_plugins, get_argnotations, isclass
-
-SPECIAL_ARGUMENTS = (Query, Form, File, Header)
 
 
 def before(req: Request, resp: Response, resource: object, params: dict):
@@ -32,12 +30,12 @@ def before(req: Request, resp: Response, resource: object, params: dict):
 def flavor(func: Callable):
     @wraps(func)
     def decorated(*args, **kwargs):
-        req_object = args[1]
-        args = [args[0]] + args[3:]  # without req, resp
-        raise Exception(req_object, args)
+        print("Decorated:", args)
+        req_object = args[0]
+        args = args[2:]  # without req, resp
         params = get_argnotations(func)
         for key, atype in params.items():
-            if isinstance(atype, SPECIAL_ARGUMENTS):
+            if isinstance(atype, Annotation):
                 atype.load(req_object)
                 kwargs[key] = atype
 

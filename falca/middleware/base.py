@@ -4,6 +4,10 @@ class Middleware(object):
     rfc: https://falcon.readthedocs.io/en/0.3.0.1/api/middleware.html#middleware-components
     """
 
+    def __init__(self, app) -> None:
+        self.app = app
+        super().__init__()
+
     def process_request(self, req, resp):
         """Process the request before routing it.
 
@@ -14,7 +18,7 @@ class Middleware(object):
                 the on_* responder.
         """
 
-    def process_resource(self, req, resp, resource):
+    def process_resource(self, req, resp, resource, *args):
         """Process the request after routing.
 
         Args:

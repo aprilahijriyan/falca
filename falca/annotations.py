@@ -2,9 +2,11 @@ from abc import ABCMeta, abstractmethod
 
 from falcon.request import Request
 
+from .schema import Schema
+
 
 class Annotation(metaclass=ABCMeta):
-    def __init__(self, schema) -> None:
+    def __init__(self, schema: Schema) -> None:
         self.schema = schema
         self.data = {}
 
@@ -27,46 +29,36 @@ class Annotation(metaclass=ABCMeta):
         """
 
 
-class Body(Annotation):
+class Validator(Annotation):
+    def validate(self, data: dict):
+        return self.schema.load(data)
+
+
+class Body(Validator):
     def load(self, request: Request):
         json = request.json
         self.data = self.validate(json)
 
-    def validate(self, data: dict):
-        pass
 
-
-class Query(Annotation):
+class Query(Validator):
     def load(self, request: Request):
         query = request.params
         self.data = self.validate(query)
 
-    def validate(self, data: dict):
-        pass
 
-
-class Header(Annotation):
+class Header(Validator):
     def load(self, request: Request):
         headers = request.headers
         self.data = self.validate(headers)
 
-    def validate(self, data: dict):
-        return super().validate(data)
 
-
-class Form(Annotation):
+class Form(Validator):
     def load(self, request: Request):
         forms = request.forms
         self.data = self.validate(forms)
 
-    def validate(self, data: dict):
-        return super().validate(data)
 
-
-class File(Annotation):
+class File(Validator):
     def load(self, request: Request):
         files = request.files
         self.data = self.validate(files)
-
-    def validate(self, data: dict):
-        return super().validate(data)

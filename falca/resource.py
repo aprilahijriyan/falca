@@ -1,21 +1,25 @@
-from typing import Any
+from typing import Any, Union
 
 import falcon
 
 from . import actions
 
 
-class ResourceMeta(type):
-    def __new__(cls, name, bases, attrs):
-        for name, func in attrs.items():
-            method = name[3:].split("_", 1)[0].upper()
-            if name.startswith("on_") and method in falcon.COMBINED_METHODS:
-                view = falcon.before(actions.before)(actions.flavor(func))
-                attrs[name] = view
+def prepare_resource(klass: object):
+    for name in dir(klass):
+        method = name[3:].split("_", 1)[0].upper()
+        if name.startswith("on_") and method in falcon.COMBINED_METHODS:
+            func = getattr(klass, name)
+            view = actions.flavor(func)
+            setattr(klass, name, view)
 
-        print("Resource:", name, attrs)
-        klass = type(name, bases, attrs)
-        return klass
+
+class ResourceMeta(type):
+    def __call__(cls, *args, **kwds):
+        instance = cls.__new__(cls)
+        instance.__init__(*args, **kwds)
+        prepare_resource(instance)
+        return instance
 
 
 class Resource(metaclass=ResourceMeta):
@@ -30,17 +34,14 @@ class Resource(metaclass=ResourceMeta):
         self.response.status = status
         self.response.headers.update(headers)
 
-    def json(self, payload, **kwds):
+    def json(self, payload: Union[dict, list], **kwds):
         self.build_response(payload, falcon.MEDIA_JSON, **kwds)
 
-    def html(self, template, context={}, **kwds):
+    def html(self, template: str, context={}, **kwds):
         html = self.render(template, **context)
         self.build_response(html, falcon.MEDIA_HTML, **kwds)
 
-    def render(self, template, **kwds):
-        t = self.template_lookup.get_template(template)
+    def render(self, template: str, **kwds):
+        t = self.request.context.templates.get_template(template)
         html = t.render(**kwds)
         return html
-
-    # def __call__(self) -> Any:
-    #     return self
