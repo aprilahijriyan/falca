@@ -1,18 +1,11 @@
-from marshmallow import fields
-
-from falca.annotations import File
+from falca.middleware.files import FileStorage
 from falca.resource import Resource
-from falca.schema import Schema
-
-
-class MediaSchema(Schema):
-    file = fields.Raw(required=True)
-
-
-schema = File(MediaSchema())
 
 
 class Media(Resource):
-    def on_post(self, body: schema):
-        print(body.data)
+    def on_post(self):
+        file: FileStorage = self.request.files["file"]
+        with open("uploaded_image.jpeg", "wb") as fp:
+            file.save(fp)
+
         self.json({"success": 1})

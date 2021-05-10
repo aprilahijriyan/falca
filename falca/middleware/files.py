@@ -19,10 +19,12 @@ class FileStorage:
         self.content_type = content_type
         self.headers = headers
 
-    def read(self, size: int = -1):
-        return self.stream.read(size)
+    def read(self, size: int = None):
+        if size:
+            return self.stream.read(size)
+        return self.stream.read()
 
-    def save(self, dst: TextIO, *, size: int = 16384):
+    def save(self, dst: TextIO, *, size: int = None):
         data = self.read(size)
         dst.write(data)
 

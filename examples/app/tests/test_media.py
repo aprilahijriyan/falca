@@ -8,7 +8,7 @@ from requests_toolbelt import MultipartEncoder
 def test_media_upload(client: TestClient):
     filename = "mie_ayam.jpeg"
     path = Path("static") / filename
-    data = {"file": ("filename", open(path, "rb"), guess_type(filename)[0])}
+    data = {"file": (filename, open(path, "rb"), guess_type(filename)[0])}
     encoder = MultipartEncoder(data)
     body = encoder.to_string()
     headers = {"Content-Type": encoder.content_type}
