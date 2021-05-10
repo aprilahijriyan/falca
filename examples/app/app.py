@@ -1,10 +1,12 @@
 from wsgiref import simple_server
 
 from resources.article import Article
+from resources.home import Home
 
 from falca.app import WSGI
 
 app = WSGI(__name__)
+app.add_route("/", Home())
 app.add_route("/article", Article())
 
 if __name__ == "__main__":
