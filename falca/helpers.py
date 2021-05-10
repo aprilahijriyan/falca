@@ -7,6 +7,9 @@ from importlib import import_module
 from typing import Callable, Dict, Union
 
 import falcon
+from falcon.request import Request
+
+from .exceptions import PluginNotFound
 
 
 def abort(code, **kwagrs):
@@ -92,6 +95,19 @@ def get_argnotations(func: Callable) -> Dict[str, type]:
             params[name] = atype
 
     return params
+
+
+def get_plugins(req: Request, resource: object):
+    plugins = {}
+    manager = req.context.app.plugin_manager
+    for name in extract_plugins(resource):
+        plugin = manager.get(name)
+        if not plugin:
+            raise PluginNotFound(name)
+
+        plugins[name] = plugin
+
+    return plugins
 
 
 def get_http_description(status_or_code: Union[str, int]):
