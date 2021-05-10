@@ -22,7 +22,7 @@ class FileStorage:
     def read(self, size: int = -1):
         return self.stream.read(size)
 
-    def save(self, dst: TextIO, size: int = 16384):
+    def save(self, dst: TextIO, *, size: int = 16384):
         data = self.read(size)
         dst.write(data)
 
