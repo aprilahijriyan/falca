@@ -14,6 +14,9 @@ class ResourceMiddleware(Middleware):
         req.context.templates = self.app.template_lookup
         resource.request = req
         resource.response = resp
-        plugins = get_plugins(req, resource)
-        for k, v in plugins.items():
-            setattr(resource, k, v)
+        plugins = getattr(resource, "_cached_plugins", False)
+        if not plugins:
+            plugins = get_plugins(req, resource)
+            for k, v in plugins.items():
+                setattr(resource, k, v)
+            resource._cached_plugins = True

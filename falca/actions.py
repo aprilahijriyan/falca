@@ -9,7 +9,11 @@ def flavor(func: Callable):
     @wraps(func)
     def decorated(*args, **kwargs):
         req_object = args[0]
-        plugins = get_plugins(req_object, func)
+        plugins = getattr(func, "_cached_plugins", {})
+        if not plugins:
+            plugins = get_plugins(req_object, func)
+            func._cached_plugins = plugins
+
         kwargs.update(plugins)
         args = args[2:]  # without req, resp
         params = get_argnotations(func)
