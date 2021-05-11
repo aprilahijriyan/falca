@@ -1,3 +1,4 @@
+from io import BytesIO
 from typing import List, TextIO
 
 from falcon import MEDIA_MULTIPART
@@ -39,7 +40,7 @@ class FileParserMiddleware(Middleware):
             parts: List[BodyPart] = req.get_media()
             for part in parts:
                 name = part.name
-                if part.content_type in MEDIA_TEXT:
+                if part.content_type in MEDIA_TEXT and part.filename is None:
                     data = forms.get(name)
                     if data and not isinstance(data, list):
                         data = [data]
@@ -51,8 +52,9 @@ class FileParserMiddleware(Middleware):
 
                     forms[name] = data
                 else:
+                    buffer = BytesIO(part.stream.read())
                     storage = FileStorage(
-                        part.stream,
+                        buffer,
                         part.secure_filename,
                         name,
                         part.content_type,
