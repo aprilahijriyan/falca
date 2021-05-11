@@ -12,7 +12,7 @@ Goals of this project:
 - [x] Nested routers
 - [ ] Plugin support
 - [ ] Settings (Global Configuration) support
-- [ ] Async Support
+- [x] Async Support
 - [ ] OpenAPI (Swagger/Redoc)
 - [ ] CLI
 
