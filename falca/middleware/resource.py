@@ -1,3 +1,5 @@
+from falcon.asgi.request import Request as ASGIRequest
+from falcon.asgi.response import Response as ASGIResponse
 from falcon.request import Request
 from falcon.response import Response
 
@@ -20,3 +22,8 @@ class ResourceMiddleware(Middleware):
             for k, v in plugins.items():
                 setattr(resource, k, v)
             resource._cached_plugins = True
+
+    async def process_resource_async(
+        self, req: ASGIRequest, resp: ASGIResponse, resource: object, *args
+    ):
+        self.process_resource(req, resp, resource, *args)

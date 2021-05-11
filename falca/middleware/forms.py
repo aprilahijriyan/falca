@@ -1,4 +1,6 @@
 from falcon import MEDIA_URLENCODED
+from falcon.asgi.request import Request as ASGIRequest
+from falcon.asgi.response import Response as ASGIResponse
 from falcon.request import Request
 from falcon.response import Response
 
@@ -12,5 +14,12 @@ class FormParserMiddleware(Middleware):
         media = {}
         if self.is_valid_content_type(req):
             media = req.get_media()
+
+        req.forms = media
+
+    async def process_request_async(self, req: ASGIRequest, resp: ASGIResponse):
+        media = {}
+        if self.is_valid_content_type(req):
+            media = await req.get_media()
 
         req.forms = media

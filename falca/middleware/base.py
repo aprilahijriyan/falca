@@ -1,4 +1,9 @@
+from typing import Union
+
 from falcon.app import App
+from falcon.asgi.request import Request as ASGIRequest
+from falcon.asgi.response import Response as ASGIResponse
+from falcon.asgi.ws import WebSocket
 from falcon.request import Request
 from falcon.response import Response
 
@@ -88,20 +93,55 @@ class Middleware(object):
                 for the request.
         """
 
-    async def process_request_async(self, req: Request, resp: Response):
+    async def process_request_async(self, req: ASGIRequest, resp: ASGIResponse):
         pass
 
     async def process_resource_async(
-        self, req: Request, resp: Response, resource: object, *args
+        self, req: ASGIRequest, resp: ASGIResponse, resource: object, *args
     ):
         pass
 
     async def process_response_async(
-        self, req: Request, resp: Response, resource: object, *args
+        self, req: ASGIRequest, resp: ASGIResponse, resource: object, *args
     ):
         pass
 
-    def is_valid_content_type(self, req: Request):
+    async def process_request_ws(self, req: ASGIRequest, ws: WebSocket):
+        """Process a WebSocket handshake request before routing it.
+
+        Note:
+            Because Falcon routes each request based on req.path, a
+            request can be effectively re-routed by setting that
+            attribute to a new value from within process_request().
+            Args:
+            req: Request object that will eventually be
+            passed into an on_websocket() responder method.
+            ws: The WebSocket object that will be passed into
+            on_websocket() after routing.
+        """
+
+    async def process_resource_ws(
+        self, req: ASGIRequest, ws: WebSocket, resource: object, params: dict
+    ):
+        """Process a WebSocket handshake request after routing.
+
+        Note:
+            This method is only called when the request matches
+            a route to a resource.
+            Args:
+            req: Request object that will be passed to the
+            routed responder.
+            ws: WebSocket object that will be passed to the
+            routed responder.
+            resource: Resource object to which the request was
+            routed.
+            params: A dict-like object representing any additional
+            params derived from the route's URI template fields,
+            that will be passed to the resource's responder
+            method as keyword arguments.
+        """
+
+    def is_valid_content_type(self, req: Union[Request, ASGIRequest]):
         if (
             self.content_type
             and req.content_type

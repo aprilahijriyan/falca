@@ -2,6 +2,9 @@ import os
 from typing import List, Tuple
 
 import falcon
+from falcon.asgi import App as ASGIApp
+from falcon.asgi.request import Request as ASGIRequest
+from falcon.asgi.response import Response as ASGIResponse
 from mako.lookup import TemplateLookup
 from marshmallow.exceptions import ValidationError
 
@@ -12,7 +15,7 @@ from .middleware.forms import FormParserMiddleware
 from .middleware.json import JsonParserMiddleware
 from .middleware.resource import ResourceMiddleware
 from .plugin_manager import PluginManager
-from .router import Router
+from .router import AsyncRouter, Router
 from .settings import Settings
 
 
@@ -59,22 +62,30 @@ class Scaffold:
         # rfc: https://falcon.readthedocs.io/en/latest/api/media.html#replacing-the-default-handlers
         self.req_options.media_handlers.update(self.media_handlers)
         self.resp_options.media_handlers.update(self.media_handlers)
-        if hasattr(self, "ws_options"):
+        m_handler = self.marshmallow_handler
+        if isinstance(self, ASGIApp):
             self.ws_options.media_handlers[
                 falcon.WebSocketPayloadType.TEXT
             ] = JSONHandlerWS
+            m_handler = self.marshmallow_handler_async
 
         self.add_middleware(ResourceMiddleware(self))
         self.add_middleware(FormParserMiddleware(self))
         self.add_middleware(JsonParserMiddleware(self))
         self.add_middleware(FileParserMiddleware(self))
         self.set_error_serializer(self.error_serializer)
-        self.add_error_handler(ValidationError, self.marshmallow_handler)
+        self.add_error_handler(ValidationError, m_handler)
 
     def add_router(self, router: Router):
-        assert isinstance(
-            router, Router
-        ), f"Router {router!r} must be an instance object of falca.router.Router"
+        if isinstance(self, ASGIApp):
+            assert (
+                type(router) is AsyncRouter
+            ), f"Router {router!r} must be an instance object of falca.router.AsyncRouter"
+        else:
+            assert (
+                type(router) is Router
+            ), f"Router {router!r} must be an instance object of falca.router.Router"
+
         router.app = self
         self.routers.append(router)
 
@@ -93,3 +104,8 @@ class Scaffold:
             "status": {"code": 422, "detail": get_http_description(422)},
             "data": exc.messages,
         }
+
+    async def marshmallow_handler_async(
+        self, req: ASGIRequest, resp: ASGIResponse, exc: ValidationError, *args
+    ):
+        self.marshmallow_handler(req, resp, exc, *args)

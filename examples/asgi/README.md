@@ -3,12 +3,12 @@
 To run this
 
 ```
-python app.py
+pip install -r requirements.txt
+uvicorn app:app
 ```
 
 To test this
 
 ```
-pip install -r requirements.txt
 pytest
 ```

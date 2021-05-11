@@ -22,3 +22,9 @@ class Router(CompiledRouter):
                 if resource:
                     break
         return resource
+
+
+class AsyncRouter(Router):
+    def add_route(self, uri_template: str, resource: object, **kwargs):
+        kwargs["_asgi"] = True
+        return super().add_route(uri_template, resource, **kwargs)

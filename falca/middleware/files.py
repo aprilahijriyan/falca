@@ -2,6 +2,8 @@ from io import BytesIO
 from typing import List, TextIO
 
 from falcon import MEDIA_MULTIPART
+from falcon.asgi.request import Request as ASGIRequest
+from falcon.asgi.response import Response as ASGIResponse
 from falcon.constants import MEDIA_TEXT
 from falcon.media.multipart import BodyPart
 from falcon.request import Request
@@ -53,6 +55,47 @@ class FileParserMiddleware(Middleware):
                     forms[name] = data
                 else:
                     buffer = BytesIO(part.stream.read())
+                    storage = FileStorage(
+                        buffer,
+                        part.secure_filename,
+                        name,
+                        part.content_type,
+                        part._headers,
+                    )
+                    data = files.get(name)
+                    if data and not isinstance(data, list):
+                        data = [data]
+                    else:
+                        data = storage
+
+                    if isinstance(data, list):
+                        data.append(storage)
+
+                    files[name] = data
+
+        req.files = files
+        req.forms = forms
+
+    async def process_request_async(self, req: ASGIRequest, resp: ASGIResponse):
+        files = {}
+        forms = {}
+        if self.is_valid_content_type(req):
+            parts: List[BodyPart] = await req.get_media()
+            async for part in parts:
+                name = part.name
+                if part.content_type in MEDIA_TEXT and part.filename is None:
+                    data = forms.get(name)
+                    if data and not isinstance(data, list):
+                        data = [data]
+                    else:
+                        data = await part.text
+
+                    if isinstance(data, list):
+                        data.append(await part.text)
+
+                    forms[name] = data
+                else:
+                    buffer = BytesIO(await part.stream.read())
                     storage = FileStorage(
                         buffer,
                         part.secure_filename,
