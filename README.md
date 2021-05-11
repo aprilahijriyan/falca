@@ -11,12 +11,13 @@ Goals of this project:
 - [x] Request body mapping
 - [ ] Nested routers
 - [ ] Plugin support
-- [ ] Global configuration support
+- [ ] Settings (Global Configuration) support
 - [ ] Async Support
 - [ ] OpenAPI (Swagger/Redoc)
 - [ ] CLI
 
-The project design planning has been described in [DESIGN.md](https://github.com/aprilahijriyan/falca/blob/d72c3e0570975e6960a1586ba0defe5b132f1963/DESIGN.md)
+The project design planning has been described in [DESIGN.md](https://github.com/aprilahijriyan/falca/blob/d72c3e0570975e6960a1586ba0defe5b132f1963/DESIGN.md).
+
 Also, if you want to contribute like bug fixes, feature additions, etc. Please read our [contribution guidelines](https://github.com/aprilahijriyan/falca/blob/main/CONTRIBUTING.md) first.
 
 For example, you can see it [here](https://github.com/aprilahijriyan/falca/tree/main/examples/app)
