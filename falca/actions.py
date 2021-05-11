@@ -6,13 +6,15 @@ from .helpers import get_argnotations, get_plugins
 
 
 def flavor(func: Callable):
+    _cache = {}
+
     @wraps(func)
     def decorated(*args, **kwargs):
         req_object = args[0]
-        plugins = getattr(func, "_cached_plugins", {})
+        plugins = _cache.get("plugins", {})
         if not plugins:
             plugins = get_plugins(req_object, func)
-            func._cached_plugins = plugins
+            _cache["plugins"] = plugins
 
         kwargs.update(plugins)
         args = args[2:]  # without req, resp
