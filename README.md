@@ -9,7 +9,7 @@ Goals of this project:
 - [x] Validates request body based on type hints.
 - [x] Marshmallow support as default object serialization and deserialization
 - [x] Request body mapping
-- [ ] Nested routers
+- [x] Nested routers
 - [ ] Plugin support
 - [ ] Settings (Global Configuration) support
 - [ ] Async Support
