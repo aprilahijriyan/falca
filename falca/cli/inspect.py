@@ -21,6 +21,8 @@ def get_routes(app: Union[WSGI, ASGI]):
         child = root.add(f":open_file_folder: {router.url_prefix}")
         parse_tree(child, roots)
 
+    return root
+
 
 def inspect_command(ctx: Context):
     """
