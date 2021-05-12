@@ -11,10 +11,16 @@ falcon = "^3.0.0"
 Mako = "^1.1.4"
 six = "^1.15.0"
 marshmallow = "^3.11.1"
+typer = {extras = ["all"], version = "^0.3.2"}
+rich = "^10.1.0"
 
 [tool.poetry.dev-dependencies]
 ipython = "^7.22.0"
 pre-commit = "^2.12.1"
+
+[tool.poetry.scripts]
+
+falca = "falca.cli.app:cli"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
