@@ -16,7 +16,7 @@ class Router(CompiledRouter):
 
     def find(self, uri: str, req=None):
         resource = super().find(uri, req=req)
-        if resource is None:
+        if self.app and resource is None:
             for router in self.app.routers:
                 resource = router.find(uri, req=req)
                 if resource:
