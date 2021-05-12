@@ -1,6 +1,6 @@
 from marshmallow import fields
 
-from falca.annotations import Body, Query
+from falca.annotations import Body, Form, Query
 from falca.resource import Resource
 from falca.schema import Schema
 
@@ -19,11 +19,27 @@ class ArticleSchema(Schema):
 
 limit_offset_query = Query(LimitOffsetSchema())
 article_body = Body(ArticleSchema())
+article_form = Form(ArticleSchema())
 
 
 class Article(Resource):
     def on_get(self, query: limit_offset_query):
+        """
+        Test query parameters
+        """
+
         self.json(query.data)
 
     def on_post(self, body: article_body):
+        """
+        Test json body
+        """
+
         self.json(body.data)
+
+    def on_post_form(self, form: article_form):
+        """
+        Test form data with suffixes
+        """
+
+        self.json(form.data)
