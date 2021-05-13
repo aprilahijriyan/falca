@@ -1,3 +1,8 @@
+import os
+
+envvar = "FALCA_SETTINGS"
+os.environ.setdefault(envvar, "settings")
+
 from private.router import private_router
 from resources.article import Article
 from resources.home import Home
@@ -6,6 +11,8 @@ from resources.media import Media
 from falca.app import ASGI
 
 app = ASGI(__name__)
+app.settings.from_envvar(envvar)
+
 app.add_route("/", Home())
 app.add_route("/article", Article())
 app.add_route("/form", Article(), suffix="form")

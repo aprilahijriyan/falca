@@ -4,7 +4,7 @@ To run this
 
 ```
 pip install -r requirements.txt
-gunicorn app:app
+falca runserver
 ```
 
 To test this

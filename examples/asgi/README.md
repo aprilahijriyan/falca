@@ -4,7 +4,7 @@ To run this
 
 ```
 pip install -r requirements.txt
-uvicorn app:app
+falca runserver
 ```
 
 To test this
