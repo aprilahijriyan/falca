@@ -52,6 +52,7 @@ def runserver_command(
         except ImportError:
             from wsgiref.simple_server import make_server
 
+            cprint(f"Listening at: [bold]http://{host}:{port}[/bold]")
             httpd = make_server(host, port, app)
             httpd.serve_forever()
 
