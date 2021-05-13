@@ -13,6 +13,7 @@ six = "^1.15.0"
 marshmallow = "^3.11.1"
 typer = {extras = ["all"], version = "^0.3.2"}
 rich = "^10.1.0"
+requests-toolbelt = "^0.9.1"
 
 [tool.poetry.dev-dependencies]
 ipython = "^7.22.0"
