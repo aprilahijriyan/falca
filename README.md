@@ -1,6 +1,6 @@
 # Falca
 
-Falca is an intuitive web framework based on the falcon framework.
+Falca is an intuitive REST APIs framework based on the falcon framework.
 
 :warning: _**Production ready soon!**_ :construction:
 
@@ -20,4 +20,26 @@ The project design planning has been described in [DESIGN.md](https://github.com
 
 Also, if you want to contribute like bug fixes, feature additions, etc. Please read our [contribution guidelines](https://github.com/aprilahijriyan/falca/blob/main/CONTRIBUTING.md) first.
 
-For example, you can see it [here](https://github.com/aprilahijriyan/falca/tree/main/examples/app)
+
+# Installation
+
+Clone this repository and go to the directory:
+
+```
+git clone https://github.com/aprilahijriyan/falca
+cd falca
+```
+
+Initialize the environment with python v3.7 using [poetry](https://python-poetry.org/)
+
+```
+poetry env use $(which python3.7)
+```
+
+Install dependencies
+
+```
+poetry install --no-dev
+```
+
+For example, you can see it [here](https://github.com/aprilahijriyan/falca/tree/main/examples)

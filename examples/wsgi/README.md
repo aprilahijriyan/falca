@@ -1,4 +1,4 @@
-# Falca Sample Project
+# Falca Sample Project (WSGI)
 
 To run this
 

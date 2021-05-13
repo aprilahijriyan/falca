@@ -53,11 +53,11 @@ To return a response you can use the `html()` or `json()` methods found in Resou
 
 Falca handles the request body a little more aesthetic xD. You can handle query, body, forms, files and headers using the notations `Query`, `Body`, `Form`, `File`, `Header` in` falca.annotations`.
 
-For examples you can find them in [examples/app](https://github.com/aprilahijriyan/falca/tree/main/examples/app)
+For examples you can find them in [examples/](https://github.com/aprilahijriyan/falca/tree/main/examples/) directory.
 
 # Project Layouts
 
-You can find the project layout in the [examples/app](https://github.com/aprilahijriyan/falca/tree/main/examples/app) directory.
+You can find the project layout in the [examples/](https://github.com/aprilahijriyan/falca/tree/main/examples/) directory.
 
 # CLI
 
