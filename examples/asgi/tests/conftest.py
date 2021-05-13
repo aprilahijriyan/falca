@@ -1,6 +1,7 @@
 import pytest
 from app import app
-from falcon.testing import TestClient
+
+from falca.testing import TestClient
 
 
 @pytest.fixture

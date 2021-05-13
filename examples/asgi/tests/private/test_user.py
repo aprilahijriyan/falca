@@ -1,5 +1,6 @@
-from falcon.testing import TestClient
 from pytest import mark
+
+from falca.testing import TestClient
 
 
 @mark.asyncio
@@ -11,5 +12,5 @@ async def test_get_users(client: TestClient):
             {"email": "toktokpaket@wkwk.com", "password": "12345"},
         ]
     }
-    resp = await client.simulate_get("/private/users")
+    resp = await client.get("/private/users")
     assert resp.json == result
