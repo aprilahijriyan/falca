@@ -3,7 +3,7 @@ import sys
 from typing import Any, Callable, Dict, Optional, Type
 
 import click
-from pkg_resources import get_distribution
+from pkg_resources import get_distribution, iter_entry_points
 from rich import print as cprint
 from typer import Context, Exit, Option, Typer
 from typer.models import Default
@@ -57,6 +57,8 @@ class Command(Typer):
             deprecated=deprecated,
             add_completion=add_completion,
         )
+        for ep in iter_entry_points("falca.commands"):
+            self.command(ep.name)(ep.load())
 
     def init(
         self,
@@ -65,6 +67,7 @@ class Command(Typer):
             None, "--version", is_eager=True, help="Show version number and exit"
         ),
     ):
+
         if ctx.resilient_parsing:
             return
 
