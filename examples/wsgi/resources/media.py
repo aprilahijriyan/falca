@@ -4,6 +4,10 @@ from falca.resource import Resource
 
 class Media(Resource):
     def on_post(self):
+        """
+        Test multipart/form-data
+        """
+
         files: FileStorage = self.request.files["file"]
         if not isinstance(files, list):
             files = [files]

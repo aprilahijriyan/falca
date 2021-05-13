@@ -1,3 +1,5 @@
+from urllib.parse import urlencode
+
 from falcon.testing import TestClient
 
 
@@ -16,3 +18,16 @@ def test_post_article(client: TestClient):
     }
     resp = client.simulate_post("/article", json=json)
     assert resp.json == json
+
+
+def test_form_article(client: TestClient):
+    data = {
+        "title": "Awesome Falcon",
+        "content": "Falcon is great framework!",
+        "categories": ["Falcon", "On", "Fire!"],
+        "tags": ["Satu", "Dua"],
+    }
+    body = urlencode(data, True)
+    headers = {"Content-Type": "application/x-www-form-urlencoded"}
+    resp = client.simulate_post("/form", body=body, headers=headers)
+    assert resp.json == data

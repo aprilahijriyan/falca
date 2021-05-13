@@ -3,6 +3,10 @@ from falca.resource import Resource
 
 class User(Resource):
     def on_get(self):
+        """
+        Get a secret user list
+        """
+
         self.json(
             {
                 "users": [

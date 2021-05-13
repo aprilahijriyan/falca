@@ -37,8 +37,8 @@ class FileParserMiddleware(Middleware):
 
     def process_request(self, req: Request, resp: Response):
         files = {}
-        forms = {}
         if self.is_valid_content_type(req):
+            forms = {}
             parts: List[BodyPart] = req.get_media()
             for part in parts:
                 name = part.name
@@ -72,14 +72,13 @@ class FileParserMiddleware(Middleware):
                         data.append(storage)
 
                     files[name] = data
-
+            req.forms = forms
         req.files = files
-        req.forms = forms
 
     async def process_request_async(self, req: ASGIRequest, resp: ASGIResponse):
         files = {}
-        forms = {}
         if self.is_valid_content_type(req):
+            forms = {}
             parts: List[BodyPart] = await req.get_media()
             async for part in parts:
                 name = part.name
@@ -113,6 +112,5 @@ class FileParserMiddleware(Middleware):
                         data.append(storage)
 
                     files[name] = data
-
+            req.forms = forms
         req.files = files
-        req.forms = forms
