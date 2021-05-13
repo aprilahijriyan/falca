@@ -32,7 +32,7 @@ def parse_tree(tree: Tree, routes: List[CompiledRouterNode], *, prefix: str = No
 
 def get_routes(app: Union[WSGI, ASGI]):
     roots = app._router._roots
-    routers = app.routers
+    routers = app._router.children
     root = Tree(":bookmark_tabs: Resources", highlight=True)
     parse_tree(root, roots)
     for router in routers:

@@ -1,5 +1,5 @@
 import os
-from typing import List, Tuple
+from typing import List, Tuple, Union
 
 import falcon
 from falcon.asgi import App as ASGIApp
@@ -34,7 +34,7 @@ class Scaffold:
         **kwds,
     ) -> None:
         self.import_name = import_name
-        self._router = self.router_class(self)
+        self._router: Router = self.router_class()
         self._router_search = self._router.find
         self.settings = self.settings_class()
         self.static_folders = static_folders
@@ -42,7 +42,6 @@ class Scaffold:
             root_path = get_root_path(import_name)
 
         self.root_path = root_path
-        self.routers = []
         templates = []
         for t in template_folders:
             if not t.startswith("/"):
@@ -76,7 +75,7 @@ class Scaffold:
         self.set_error_serializer(self.error_serializer)
         self.add_error_handler(ValidationError, m_handler)
 
-    def add_router(self, router: Router):
+    def include_router(self, router: Union[Router, AsyncRouter]):
         if isinstance(self, ASGIApp):
             assert (
                 type(router) is AsyncRouter
@@ -86,8 +85,7 @@ class Scaffold:
                 type(router) is Router
             ), f"Router {router!r} must be an instance object of falca.router.Router"
 
-        router.app = self
-        self.routers.append(router)
+        self._router.include_router(router)
 
     def error_serializer(
         self, req: falcon.Request, resp: falcon.Response, exc: falcon.HTTPError
@@ -101,7 +99,7 @@ class Scaffold:
         resp.status = falcon.HTTP_422
         resp.content_type = falcon.MEDIA_JSON
         resp.media = {
-            "status": {"code": 422, "detail": get_http_description(422)},
+            "status": {"code": 422, "description": get_http_description(422)},
             "data": exc.messages,
         }
 
