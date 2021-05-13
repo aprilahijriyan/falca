@@ -1,6 +1,6 @@
 # Contribution Guidelines
 
-1. Repo forks and clones
+1. Fork repo and clone
 2. Make sure you have `git-flow` installed and initialized your repo using `git flow init`
 3. Create features, bugfixes, etc.
 
