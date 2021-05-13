@@ -1,4 +1,5 @@
 import os
+import sys
 from typing import Any, Callable, Dict, Optional, Type
 
 import click
@@ -9,6 +10,7 @@ from typer.models import Default
 
 from ..helpers import import_attr
 from .inspect import inspect_command
+from .runserver import runserver_command
 
 
 class Command(Typer):
@@ -18,7 +20,7 @@ class Command(Typer):
         name: Optional[str] = Default(None),
         cls: Optional[Type[click.Command]] = Default(None),
         # invoke_without_command: bool = Default(False),
-        no_args_is_help: Optional[bool] = Default(None),
+        # no_args_is_help: Optional[bool] = Default(None),
         subcommand_metavar: Optional[str] = Default(None),
         chain: bool = Default(False),
         result_callback: Optional[Callable[..., Any]] = Default(None),
@@ -34,7 +36,7 @@ class Command(Typer):
         deprecated: bool = Default(False),
         add_completion: bool = True,
     ):
-        invoke_without_command = True
+        no_args_is_help = invoke_without_command = True
         callback = self.init
         super().__init__(
             name=name,
@@ -71,18 +73,22 @@ class Command(Typer):
             cprint(f":package: Falca v{version}")
             raise Exit
 
-        ctx.app = load_app()
+        ctx.obj = load_app()
 
 
 cli = Command(name="falca", help="Falca Command")
 cli.command("inspect")(inspect_command)
+cli.command("runserver")(runserver_command)
 
 
 def load_app():
     try:
+        os.chdir(os.getcwd())
+        sys.path.insert(0, os.getcwd())
         src = os.environ.get("FALCA_APP", "app.app")
         app = import_attr(src)
         return app
+
     except ImportError:
         cprint("[red]Error:[/red] can't find app :eyes:")
         raise Exit
