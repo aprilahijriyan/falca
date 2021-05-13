@@ -11,7 +11,7 @@ Goals of this project:
 - [x] Request body mapping
 - [x] Nested routers
 - [ ] Plugin support
-- [ ] Settings (Global Configuration) support
+- [x] Settings (Global Configuration) support
 - [x] Async Support
 - [ ] OpenAPI (Swagger/Redoc)
 - [x] CLI
