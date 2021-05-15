@@ -115,3 +115,11 @@ class Scaffold:
         self, req: ASGIRequest, resp: ASGIResponse, exc: ValidationError, *args
     ):
         self.marshmallow_handler(req, resp, exc, *args)
+
+    def make_shell_context(self):
+        return {
+            "app": self,
+            "router": self._router,
+            "plugin": self.plugin_manager,
+            "templates": self.template_lookup,
+        }
