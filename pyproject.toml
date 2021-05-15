@@ -18,6 +18,7 @@ requests-toolbelt = "^0.9.1"
 [tool.poetry.dev-dependencies]
 ipython = "^7.22.0"
 pre-commit = "^2.12.1"
+httpie = "^2.4.0"
 
 [tool.poetry.scripts]
 
