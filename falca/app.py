@@ -2,6 +2,7 @@ from falcon.app import App as WSGIBase
 from falcon.asgi import App as ASGIBase
 
 from .request import ASGIRequest, Request
+from .router import AsyncRouter
 from .scaffold import Scaffold
 
 
@@ -13,6 +14,8 @@ class WSGI(WSGIBase, Scaffold):
 
 
 class ASGI(ASGIBase, Scaffold):
+    router_class = AsyncRouter
+
     def __init__(self, import_name: str, **kwds):
         kwds["request_type"] = ASGIRequest
         super().__init__(**kwds)
