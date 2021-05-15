@@ -1,9 +1,9 @@
 from falcon.asgi.request import Request as ASGIRequest
 from falcon.asgi.response import Response as ASGIResponse
-from falcon.request import Request
 from falcon.response import Response
 
 from ..helpers import get_plugins
+from ..request import ASGIRequest, Request
 from .base import Middleware
 
 
@@ -14,8 +14,6 @@ class ResourceMiddleware(Middleware):
 
         req.context.app = self.app
         req.context.templates = self.app.template_lookup
-        resource.request = req
-        resource.response = resp
         plugins = getattr(resource, "_cached_plugins", False)
         if not plugins:
             plugins = get_plugins(req, resource)

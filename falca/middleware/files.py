@@ -2,13 +2,12 @@ from io import BytesIO
 from typing import List, TextIO
 
 from falcon import MEDIA_MULTIPART
-from falcon.asgi.request import Request as ASGIRequest
 from falcon.asgi.response import Response as ASGIResponse
 from falcon.constants import MEDIA_TEXT
 from falcon.media.multipart import BodyPart
-from falcon.request import Request
 from falcon.response import Response
 
+from ..request import ASGIRequest, Request
 from .base import Middleware
 
 

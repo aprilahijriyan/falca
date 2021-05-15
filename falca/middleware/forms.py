@@ -1,9 +1,8 @@
 from falcon import MEDIA_URLENCODED
-from falcon.asgi.request import Request as ASGIRequest
 from falcon.asgi.response import Response as ASGIResponse
-from falcon.request import Request
 from falcon.response import Response
 
+from ..request import ASGIRequest, Request
 from .base import Middleware
 
 

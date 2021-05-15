@@ -1,7 +1,7 @@
 from abc import ABCMeta, abstractmethod
+from typing import Union
 
-from falcon.request import Request
-
+from .request import ASGIRequest, Request
 from .schema import Schema
 
 
@@ -11,12 +11,12 @@ class Annotation(metaclass=ABCMeta):
         self.data = {}
 
     @abstractmethod
-    def load(self, request: Request):
+    def load(self, request: Union[Request, ASGIRequest]):
         """
         Load data from the request object
 
         Args:
-            request (falcon.request.Request): request object
+            request (Union[falca.request.Request, falca.request.ASGIRequest]): request object
         """
 
     @abstractmethod
@@ -35,30 +35,30 @@ class Validator(Annotation):
 
 
 class Body(Validator):
-    def load(self, request: Request):
+    def load(self, request: Union[Request, ASGIRequest]):
         json = request.json
         self.data = self.validate(json)
 
 
 class Query(Validator):
-    def load(self, request: Request):
+    def load(self, request: Union[Request, ASGIRequest]):
         query = request.params
         self.data = self.validate(query)
 
 
 class Header(Validator):
-    def load(self, request: Request):
+    def load(self, request: Union[Request, ASGIRequest]):
         headers = request.headers
         self.data = self.validate(headers)
 
 
 class Form(Validator):
-    def load(self, request: Request):
+    def load(self, request: Union[Request, ASGIRequest]):
         forms = request.forms
         self.data = self.validate(forms)
 
 
 class File(Validator):
-    def load(self, request: Request):
+    def load(self, request: Union[Request, ASGIRequest]):
         files = request.files
         self.data = self.validate(files)

@@ -1,5 +1,3 @@
-from typing import Any, Union
-
 import falcon
 
 from . import actions
@@ -23,36 +21,4 @@ class ResourceMeta(type):
 
 
 class Resource(metaclass=ResourceMeta):
-    request: falcon.Request = None
-    response: falcon.Response = None
-
-    def make_response(
-        self,
-        data: Any,
-        content_type: str,
-        *,
-        status: str = falcon.HTTP_200,
-        headers: dict = {}
-    ):
-        app = self.request.context.app
-        media_handlers = app.media_handlers
-        if content_type in media_handlers:
-            self.response.media = data
-        else:
-            self.response.text = data
-
-        self.response.content_type = content_type
-        self.response.status = status
-        self.response.headers.update(headers)
-
-    def json(self, payload: Union[dict, list], **kwds):
-        self.make_response(payload, falcon.MEDIA_JSON, **kwds)
-
-    def html(self, template: str, context={}, **kwds):
-        html = self.render(template, **context)
-        self.make_response(html, falcon.MEDIA_HTML, **kwds)
-
-    def render(self, template: str, **kwds):
-        t = self.request.context.templates.get_template(template)
-        html = t.render(**kwds)
-        return html
+    pass
