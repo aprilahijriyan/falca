@@ -1,11 +1,11 @@
 from typing import Union
 
 from falcon.app import App
-from falcon.asgi.request import Request as ASGIRequest
 from falcon.asgi.response import Response as ASGIResponse
 from falcon.asgi.ws import WebSocket
-from falcon.request import Request
 from falcon.response import Response
+
+from ..request import ASGIRequest, Request
 
 
 class Middleware(object):
@@ -20,7 +20,7 @@ class Middleware(object):
         self.app = app
         super().__init__()
 
-    async def process_startup(self, scope, event):
+    async def process_startup(self, scope: dict, event: dict):
         """Process the ASGI lifespan startup event.
 
         Invoked when the server is ready to start up and
@@ -40,7 +40,7 @@ class Middleware(object):
                 startup event.
         """
 
-    async def process_shutdown(self, scope, event):
+    async def process_shutdown(self, scope: dict, event: dict):
         """Process the ASGI lifespan shutdown event.
 
         Invoked when the server has stopped accepting

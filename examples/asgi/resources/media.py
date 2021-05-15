@@ -1,10 +1,12 @@
 from falca.middleware.files import FileStorage
+from falca.request import ASGIRequest
 from falca.resource import Resource
+from falca.responses import JsonResponse
 
 
 class Media(Resource):
-    async def on_post(self):
-        files: FileStorage = self.request.files["file"]
+    async def on_post(self, request: ASGIRequest):
+        files: FileStorage = request.files["file"]
         if not isinstance(files, list):
             files = [files]
 
@@ -12,4 +14,4 @@ class Media(Resource):
             with open(f.filename, "wb") as fp:
                 f.save(fp)
 
-        self.json({"success": 1})
+        return JsonResponse({"success": 1})

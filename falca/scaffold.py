@@ -1,10 +1,12 @@
 import os
 from typing import List, Tuple, Union
 
-import falcon
 from falcon.asgi import App as ASGIApp
-from falcon.asgi.request import Request as ASGIRequest
 from falcon.asgi.response import Response as ASGIResponse
+from falcon.constants import MEDIA_JSON, WebSocketPayloadType
+from falcon.http_error import HTTPError
+from falcon.response import Response
+from falcon.status_codes import HTTP_422
 from mako.lookup import TemplateLookup
 from marshmallow.exceptions import ValidationError
 
@@ -15,6 +17,7 @@ from .middleware.forms import FormParserMiddleware
 from .middleware.json import JsonParserMiddleware
 from .middleware.resource import ResourceMiddleware
 from .plugin_manager import PluginManager
+from .request import ASGIRequest, Request
 from .router import AsyncRouter, Router
 from .settings import Settings
 
@@ -23,7 +26,7 @@ class Scaffold:
     settings_class = Settings
     plugin_manager_class = PluginManager
     router_class = Router
-    media_handlers = {falcon.MEDIA_JSON: JSONHandler}
+    media_handlers = {MEDIA_JSON: JSONHandler}
 
     def __init__(
         self,
@@ -63,9 +66,7 @@ class Scaffold:
         self.resp_options.media_handlers.update(self.media_handlers)
         m_handler = self.marshmallow_handler
         if isinstance(self, ASGIApp):
-            self.ws_options.media_handlers[
-                falcon.WebSocketPayloadType.TEXT
-            ] = JSONHandlerWS
+            self.ws_options.media_handlers[WebSocketPayloadType.TEXT] = JSONHandlerWS
             m_handler = self.marshmallow_handler_async
 
         self.add_middleware(ResourceMiddleware(self))
@@ -88,16 +89,23 @@ class Scaffold:
         self._router.include_router(router)
 
     def error_serializer(
-        self, req: falcon.Request, resp: falcon.Response, exc: falcon.HTTPError
+        self,
+        req: Union[Request, ASGIRequest],
+        resp: Union[Response, ASGIResponse],
+        exc: HTTPError,
     ):
-        resp.content_type = falcon.MEDIA_JSON
+        resp.content_type = MEDIA_JSON
         resp.data = exc.to_json()
 
     def marshmallow_handler(
-        self, req: falcon.Request, resp: falcon.Response, exc: ValidationError, *args
+        self,
+        req: Union[Request, ASGIRequest],
+        resp: Union[Response, ASGIResponse],
+        exc: ValidationError,
+        *args,
     ):
-        resp.status = falcon.HTTP_422
-        resp.content_type = falcon.MEDIA_JSON
+        resp.status = HTTP_422
+        resp.content_type = MEDIA_JSON
         resp.media = {
             "status": {"code": 422, "description": get_http_description(422)},
             "data": exc.messages,

@@ -1,4 +1,5 @@
 from falca.resource import Resource
+from falca.responses import HtmlResponse
 
 
 class Home(Resource):
@@ -7,4 +8,4 @@ class Home(Resource):
         Test html templates
         """
 
-        self.html("index.html", context={"body": "not bad!"})
+        return HtmlResponse("index.html", context={"body": "not bad!"})

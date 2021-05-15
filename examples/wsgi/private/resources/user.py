@@ -1,4 +1,5 @@
 from falca.resource import Resource
+from falca.responses import JsonResponse
 
 
 class User(Resource):
@@ -7,7 +8,7 @@ class User(Resource):
         Get a secret user list
         """
 
-        self.json(
+        return JsonResponse(
             {
                 "users": [
                     {"email": "wakwaw@wkwk.com", "password": "123"},
