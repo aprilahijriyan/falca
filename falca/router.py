@@ -2,7 +2,7 @@ from typing import List, Union
 
 from falcon.routing import CompiledRouter
 
-from falca.exceptions import BadRouter, EndpointConflict
+from .exceptions import BadRouter, EndpointConflict, FalcaError
 
 
 class Router(CompiledRouter):
@@ -30,6 +30,9 @@ class Router(CompiledRouter):
     def include_router(self, router: Union["Router", "AsyncRouter"]):
         if not router.url_prefix:
             raise BadRouter("URL prefix needed for nesting router")
+
+        if self.url_prefix:
+            raise FalcaError("For now you can only add one router :)")
 
         self._check_router(router)
         self.children.append(router)
