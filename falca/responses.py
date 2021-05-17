@@ -61,7 +61,7 @@ class Response:
 class HtmlResponse(Response):
     content_type = MEDIA_HTML
 
-    def __init__(self, content: str, context: dict, **kwds) -> None:
+    def __init__(self, content: str, context: dict = {}, **kwds) -> None:
         self.context = context
         super().__init__(content, **kwds)
 
