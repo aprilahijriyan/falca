@@ -1,4 +1,5 @@
 import os
+from functools import partialmethod
 from typing import List, Tuple, Union
 
 from falcon.asgi import App as ASGIApp
@@ -18,6 +19,7 @@ from .middleware.json import JsonParserMiddleware
 from .middleware.resource import ResourceMiddleware
 from .plugin_manager import PluginManager
 from .request import ASGIRequest, Request
+from .resource import create_resource
 from .router import AsyncRouter, Router
 from .settings import Settings
 
@@ -70,11 +72,28 @@ class Scaffold:
             m_handler = self.marshmallow_handler_async
 
         self.add_middleware(ResourceMiddleware(self))
-        self.add_middleware(FormParserMiddleware(self))
-        self.add_middleware(JsonParserMiddleware(self))
-        self.add_middleware(FileParserMiddleware(self))
+        self.add_middleware(FormParserMiddleware())
+        self.add_middleware(JsonParserMiddleware())
+        self.add_middleware(FileParserMiddleware())
         self.set_error_serializer(self.error_serializer)
         self.add_error_handler(ValidationError, m_handler)
+
+    def route(self, path: str, methods: List[str] = ["get", "head"]):
+        def decorated(func):
+            resource = create_resource(methods, func)()
+            self.add_route(path, resource)
+            return func
+
+        return decorated
+
+    head = partialmethod(route, methods=["head"])
+    get = partialmethod(route, methods=["get"])
+    post = partialmethod(route, methods=["post"])
+    put = partialmethod(route, methods=["put"])
+    delete = partialmethod(route, methods=["delete"])
+    options = partialmethod(route, methods=["options"])
+    patch = partialmethod(route, methods=["patch"])
+    trace = partialmethod(route, methods=["trace"])
 
     def include_router(self, router: Union[Router, AsyncRouter]):
         if isinstance(self, ASGIApp):

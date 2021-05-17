@@ -1,5 +1,9 @@
 import os
 
+from falcon.asgi.ws import WebSocket
+
+from falca.responses import HtmlResponse
+
 envvar = "FALCA_SETTINGS"
 os.environ.setdefault(envvar, "settings")
 
@@ -13,7 +17,22 @@ from falca.app import ASGI
 app = ASGI(__name__)
 app.settings.from_envvar(envvar)
 
-app.add_route("/", Home())
+
+@app.get("/")
+async def index():
+    return HtmlResponse("index.html", context={"body": "not bad!"})
+
+
+@app.websocket("/events")
+async def events(ws: WebSocket):
+    await ws.accept()
+    data = await ws.receive_media()
+    key = data["key"]
+    msg = "ok" if key == "baka" else "oh"
+    await ws.send_media({"msg": msg})
+
+
+app.add_route("/home", Home())
 app.add_route("/article", Article())
 app.add_route("/form", Article(), suffix="form")
 app.add_route("/media", Media())
