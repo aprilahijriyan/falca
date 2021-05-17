@@ -3,6 +3,7 @@ from functools import wraps
 from typing import Callable
 
 from falcon.asgi.response import Response as ASGIResponse
+from falcon.asgi.ws import WebSocket
 from falcon.response import Response as WSGIResponse
 
 from .annotations import Annotation
@@ -29,18 +30,24 @@ def flavor(func: Callable):
                 atype.load(req_object)
                 kwargs[key] = atype
 
-            elif issubclass(atype, (Request, ASGIRequest)):
+            elif issubclass(atype, (Request, ASGIRequest)) and isinstance(
+                req_object, (Request, ASGIRequest)
+            ):
                 kwargs[key] = req_object
 
-            elif issubclass(atype, (WSGIResponse, ASGIResponse)):
+            elif issubclass(atype, (WSGIResponse, ASGIResponse)) and isinstance(
+                resp_object, (WSGIResponse, ASGIResponse)
+            ):
+                kwargs[key] = resp_object
+
+            elif issubclass(atype, WebSocket) and isinstance(resp_object, WebSocket):
                 kwargs[key] = resp_object
 
         return kwargs
 
     if iscoroutinefunction(func):
 
-        @wraps(func)
-        async def wrapper(*args, **kwargs):
+        async def responder(*args, **kwargs):
             kwargs = logic(*args, **kwargs)
             resp = await func(*args[2:], **kwargs)
             if isinstance(resp, Response):
@@ -48,11 +55,11 @@ def flavor(func: Callable):
 
     else:
 
-        @wraps(func)
-        def wrapper(*args, **kwargs):
+        def responder(*args, **kwargs):
             kwargs = logic(*args, **kwargs)
             resp = func(*args[2:], **kwargs)
             if isinstance(resp, Response):
                 resp.build(args[0], args[1])
 
+    wrapper = wraps(func)(responder)
     return wrapper
