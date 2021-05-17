@@ -1,6 +1,10 @@
-from typing import Any, Union
+import inspect
+from asyncio import iscoroutinefunction
+from functools import wraps
+from typing import Callable, List
 
 import falcon
+from falcon.constants import COMBINED_METHODS
 
 from . import actions
 
@@ -14,6 +18,36 @@ def prepare_resource(klass: object):
             setattr(klass, name, view)
 
 
+def create_resource(methods: List[str], view_func: Callable):
+    responders = {}
+    for method in methods:
+        assert (
+            method.upper() in COMBINED_METHODS
+        ), f"unknown method {method} (valid value {COMBINED_METHODS!r})"
+
+        if iscoroutinefunction(view_func):
+
+            async def responder(self, *args, **kwds):
+                return await view_func(*args, **kwds)
+
+        else:
+
+            def responder(self, *args, **kwds):
+                return view_func(*args, **kwds)
+
+        wrapper = wraps(view_func)(responder)
+        old_sig = inspect.signature(wrapper)
+        params = [inspect.Parameter("self", inspect.Parameter.POSITIONAL_ONLY)] + list(
+            inspect.signature(view_func).parameters.values()
+        )
+        new_sig = old_sig.replace(parameters=params)
+        responder.__signature__ = new_sig  # boom
+        responders["on_" + method.lower()] = wrapper
+
+    klass = type(view_func.__name__, (Resource,), responders)
+    return klass
+
+
 class ResourceMeta(type):
     def __call__(cls, *args, **kwds):
         instance = cls.__new__(cls)
@@ -23,36 +57,4 @@ class ResourceMeta(type):
 
 
 class Resource(metaclass=ResourceMeta):
-    request: falcon.Request = None
-    response: falcon.Response = None
-
-    def make_response(
-        self,
-        data: Any,
-        content_type: str,
-        *,
-        status: str = falcon.HTTP_200,
-        headers: dict = {}
-    ):
-        app = self.request.context.app
-        media_handlers = app.media_handlers
-        if content_type in media_handlers:
-            self.response.media = data
-        else:
-            self.response.text = data
-
-        self.response.content_type = content_type
-        self.response.status = status
-        self.response.headers.update(headers)
-
-    def json(self, payload: Union[dict, list], **kwds):
-        self.make_response(payload, falcon.MEDIA_JSON, **kwds)
-
-    def html(self, template: str, context={}, **kwds):
-        html = self.render(template, **context)
-        self.make_response(html, falcon.MEDIA_HTML, **kwds)
-
-    def render(self, template: str, **kwds):
-        t = self.request.context.templates.get_template(template)
-        html = t.render(**kwds)
-        return html
+    pass

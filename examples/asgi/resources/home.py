@@ -1,6 +1,7 @@
 from falca.resource import Resource
+from falca.responses import HtmlResponse
 
 
 class Home(Resource):
     async def on_get(self):
-        self.html("index.html", context={"body": "not bad!"})
+        return HtmlResponse("index.html", context={"body": "not bad!"})

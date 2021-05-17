@@ -11,6 +11,7 @@ from typer.models import Default
 from ..helpers import import_attr
 from .inspect import inspect_command
 from .runserver import runserver_command
+from .shell import shell_command
 
 
 class Command(Typer):
@@ -82,6 +83,9 @@ class Command(Typer):
 cli = Command(name="falca", help="Falca Command")
 cli.command("inspect")(inspect_command)
 cli.command("runserver")(runserver_command)
+cli.command(
+    "shell", context_settings={"allow_extra_args": True, "ignore_unknown_options": True}
+)(shell_command)
 
 
 def load_app():

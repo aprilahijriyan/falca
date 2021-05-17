@@ -1,9 +1,13 @@
+import asyncio
+
 from falca.resource import Resource
+from falca.responses import JsonResponse
 
 
 class User(Resource):
     async def on_get(self):
-        self.json(
+        await asyncio.sleep(5)
+        return JsonResponse(
             {
                 "users": [
                     {"email": "wakwaw@wkwk.com", "password": "123"},

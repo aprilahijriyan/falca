@@ -14,10 +14,11 @@ marshmallow = "^3.11.1"
 typer = {extras = ["all"], version = "^0.3.2"}
 rich = "^10.1.0"
 requests-toolbelt = "^0.9.1"
+ipython = "^7.23.1"
 
 [tool.poetry.dev-dependencies]
-ipython = "^7.22.0"
 pre-commit = "^2.12.1"
+httpie = "^2.4.0"
 
 [tool.poetry.scripts]
 

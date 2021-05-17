@@ -34,24 +34,24 @@ The falcon application itself is designed to be as minimal as possible and we wi
 
 # Global Attributes
 
-In some frameworks like flask there is a global variable `current_app` which is a local proxy that can be used when the flask context app has been pushed. However, in the falcon framework is very confusing, to add functionality like that. This is the best idea I have in mind :). We will add some attributes to the resource via middleware. These are the attributes that will be added:
+In some frameworks like flask there is a global variable `current_app` which is a local proxy that can be used when the flask context app has been pushed. However, in the falcon framework is very confusing, to add functionality like that. This is the best idea I have in mind :). We will add some attributes via the middleware. These are the attributes that will be added:
 
 * `request.context.app` => App instance object.
 * `request.context.templates` => Mako template lookup.
-* `self.request` => falcon.Request object
-* `self.response` => falcon.Response object
+* All installed plugins will be included in the resource.
 
-That `self` is the instance of your Resource object.
+And if you need any configuration to save or use it, you can use `app.settings`
 
 # Request & Response
 
-By default, the request and response objects that are passed to the responder are removed and moved to the `self.request` and `self.response` attributes. See [here](#global-attributes)
+By default, the request and response objects that are passed to the responder are removed.
+And we made it optional, if you need Request and Response objects you just need to add typing hints ` falca.request.Request` (for WSGI) or `falca.request.ASGIRequest` (for ASGI).
 
-To return a response you can use the `html()` or `json()` methods found in Resources.
+For response objects, you only need to add typing hints for `falcon.response.Response` (for WSGI) or `falcon.asgi.response.Response` (for ASGI).
 
 # Request Body
 
-Falca handles the request body a little more aesthetic xD. You can handle query, body, forms, files and headers using the notations `Query`, `Body`, `Form`, `File`, `Header` in` falca.annotations`.
+Falca handles the request body a little more aesthetic xD. You can handle query, body, forms, files and headers using the notations `Query`, `Body`, `Form`, `File`, `Header` in `falca.annotations`.
 
 For examples you can find them in [examples/](https://github.com/aprilahijriyan/falca/tree/main/examples/) directory.
 
@@ -67,4 +67,5 @@ The features that will be in this command are:
 
 * Support for running applications
 * Support to display a list of endpoint
+* Running the shell (using IPython) (might be useful for debugging?)
 * Support for adding commands via [entry_points](https://setuptools.readthedocs.io/en/latest/userguide/entry_point.html)

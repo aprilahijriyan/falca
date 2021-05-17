@@ -21,6 +21,46 @@ The project design planning has been described in [DESIGN.md](https://github.com
 Also, if you want to contribute like bug fixes, feature additions, etc. Please read our [contribution guidelines](https://github.com/aprilahijriyan/falca/blob/main/CONTRIBUTING.md) first.
 
 
+# Usage
+
+Let's see how beautiful it is
+
+```python
+from falca.app import ASGI
+from falca.resource import Resource
+from falca.responses import JsonResponse
+from falca.schema import Schema
+from falca.annotations import Query
+from marshmallow import fields
+
+class LimitOffsetSchema(Schema):
+    limit = fields.Int()
+    offset = fields.Int()
+
+LimitOffsetQuery = Query(LimitOffsetSchema())
+
+class Simple(Resource):
+    async def on_get(self, query: LimitOffsetQuery):
+        data = query.data
+        if not data:
+            data = {"message": "Looks good?"}
+
+        return JsonResponse(data)
+
+app = ASGI(__name__)
+app.add_route("/", Simple())
+```
+
+Save the code above with filename `app.py`
+And run it with the command `falca`
+
+```sh
+falca runserver
+```
+
+**NOTE**: For the ASGI app, you need to install `uvicorn` before running it.
+Also for other examples, you can find them [here](https://github.com/aprilahijriyan/falca/tree/main/examples)
+
 # Installation
 
 Clone this repository and go to the directory:
@@ -41,5 +81,3 @@ Install dependencies
 ```
 poetry install --no-dev
 ```
-
-For example, you can see it [here](https://github.com/aprilahijriyan/falca/tree/main/examples)
