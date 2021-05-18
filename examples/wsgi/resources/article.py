@@ -2,7 +2,7 @@ from marshmallow import fields
 
 from falca.annotations import Body, Form, Query
 from falca.resource import Resource
-from falca.responses import JsonResponse
+from falca.responses import JSONResponse
 from falca.schema import Schema
 
 
@@ -29,18 +29,18 @@ class Article(Resource):
         Test query parameters
         """
 
-        return JsonResponse(query.data)
+        return JSONResponse(query.data)
 
     def on_post(self, body: article_body):
         """
         Test json body
         """
 
-        return JsonResponse(body.data)
+        return JSONResponse(body.data)
 
     def on_post_form(self, form: article_form):
         """
         Test form data with suffixes
         """
 
-        return JsonResponse(form.data)
+        return JSONResponse(form.data)

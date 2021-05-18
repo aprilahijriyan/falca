@@ -1,8 +1,10 @@
+from functools import partialmethod
 from typing import List, Union
 
 from falcon.routing import CompiledRouter
 
 from .exceptions import BadRouter, EndpointConflict, FalcaError
+from .resource import create_resource
 
 
 class Router(CompiledRouter):
@@ -11,6 +13,23 @@ class Router(CompiledRouter):
         self.children: List[Router] = []
         self._uri_mapping = []
         super().__init__()
+
+    def route(self, path: str, methods: List[str] = ["get", "head"]):
+        def decorated(func):
+            resource = create_resource(methods, func)()
+            self.add_route(path, resource)
+            return func
+
+        return decorated
+
+    head = partialmethod(route, methods=["head"])
+    get = partialmethod(route, methods=["get"])
+    post = partialmethod(route, methods=["post"])
+    put = partialmethod(route, methods=["put"])
+    delete = partialmethod(route, methods=["delete"])
+    options = partialmethod(route, methods=["options"])
+    patch = partialmethod(route, methods=["patch"])
+    trace = partialmethod(route, methods=["trace"])
 
     def add_route(self, uri_template: str, resource: object, **kwargs):
         if self.url_prefix:

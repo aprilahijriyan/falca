@@ -1,7 +1,8 @@
-from typing import Any, Union
+from functools import wraps
+from typing import Any, AsyncGenerator, Generator, Tuple, Union
 
 from falcon.asgi.response import Response as _ASGIResponse
-from falcon.constants import MEDIA_HTML, MEDIA_JSON
+from falcon.constants import MEDIA_HTML, MEDIA_JSON, MEDIA_TEXT
 from falcon.response import Response as _Response
 from falcon.util.misc import code_to_http_status
 
@@ -22,14 +23,35 @@ class Response:
         self.status = status
         self.content_type = content_type or self.content_type
         self.headers = headers
-        self._cookies = []
-        self._unset_cookies = []
+        self._stacked = {}
 
-    def set_cookie(self, name, value, **kwds):
-        self._cookies.append((name, value, kwds))
+    def _save_args(self, key: str, args: Tuple[Any], kwds: dict):
+        try:
+            stack = self._stacked[key]
+        except KeyError:
+            stack = self._stacked[key] = []
 
-    def unset_cookie(self, name, **kwds):
-        self._unset_cookies.append((name, kwds))
+        stack.append((args, kwds))
+
+    @wraps(_Response.set_cookie)
+    def set_cookie(self, *args, **kwds):
+        key = "set_cookie"
+        self._save_args(key, args, kwds)
+
+    @wraps(_Response.unset_cookie)
+    def unset_cookie(self, *args, **kwds):
+        key = "unset_cookie"
+        self._save_args(key, args, kwds)
+
+    @wraps(_Response.append_header)
+    def append_header(self, *args, **kwds):
+        key = "append_header"
+        self._save_args(key, args, kwds)
+
+    @wraps(_Response.delete_header)
+    def delete_header(self, *args, **kwds):
+        key = "delete_header"
+        self._save_args(key, args, kwds)
 
     def build_content(
         self, req: Union[Request, ASGIRequest], resp: Union[_Response, _ASGIResponse]
@@ -50,15 +72,14 @@ class Response:
             self.status = code_to_http_status(self.status)
 
         resp.status = self.status
-        resp.headers.update(self.headers)
-        for name, value, kwds in self._cookies:
-            resp.set_cookie(name, value, **kwds)
+        resp.set_headers(self.headers)
+        for name, params in self._stacked.items():
+            method = getattr(resp, name)
+            for args, kwds in params:
+                method(*args, **kwds)
 
-        for name, kwds in self._unset_cookies:
-            resp.unset_cookie(name, **kwds)
 
-
-class HtmlResponse(Response):
+class HTMLResponse(Response):
     content_type = MEDIA_HTML
 
     def __init__(self, content: str, context: dict = {}, **kwds) -> None:
@@ -77,8 +98,33 @@ class HtmlResponse(Response):
         super().build(req, resp)
 
 
-class JsonResponse(Response):
+class JSONResponse(Response):
     content_type = MEDIA_JSON
 
     def __init__(self, content: Union[dict, list], **kwds) -> None:
         super().__init__(content, **kwds)
+
+
+class TextResponse(Response):
+    content_type = MEDIA_TEXT
+
+    def __init__(self, content: str, **kwds):
+        super().__init__(content, **kwds)
+
+
+class StreamingResponse(Response):
+    def __init__(self, content: Union[AsyncGenerator, Generator], **kwds):
+        super().__init__(content, **kwds)
+
+    def build_content(
+        self, req: Union[Request, ASGIRequest], resp: Union[_Response, _ASGIResponse]
+    ):
+        resp.stream = self.content
+
+
+class StreamingVideoResponse(StreamingResponse):
+    """
+    Taken from https://stackoverflow.com/questions/53595351/how-to-stream-video-motion-jpeg-using-falcon-server
+    """
+
+    content_type = "multipart/x-mixed-replace; boundary=frame"

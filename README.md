@@ -13,13 +13,33 @@ Goals of this project:
 - [ ] Plugin support
 - [x] Settings (Global Configuration) support
 - [x] Async Support
-- [ ] OpenAPI (Swagger/Redoc)
+- [ ] OpenAPI (Swagger & Redoc)
 - [x] CLI
 
 The project design planning has been described in [DESIGN.md](https://github.com/aprilahijriyan/falca/blob/d72c3e0570975e6960a1586ba0defe5b132f1963/DESIGN.md).
 
 Also, if you want to contribute like bug fixes, feature additions, etc. Please read our [contribution guidelines](https://github.com/aprilahijriyan/falca/blob/main/CONTRIBUTING.md) first.
 
+# Installation
+
+Clone this repository and go to the directory:
+
+```
+git clone https://github.com/aprilahijriyan/falca
+cd falca
+```
+
+Initialize the environment with python v3.7 using [poetry](https://python-poetry.org/)
+
+```
+poetry env use $(which python3.7)
+```
+
+Install dependencies
+
+```
+poetry install --no-dev
+```
 
 # Usage
 
@@ -52,7 +72,7 @@ app.add_route("/", Simple())
 ```
 
 Save the code above with filename `app.py`
-And run it with the command `falca`
+And run it with the command:
 
 ```sh
 falca runserver
@@ -60,24 +80,3 @@ falca runserver
 
 **NOTE**: For the ASGI app, you need to install `uvicorn` before running it.
 Also for other examples, you can find them [here](https://github.com/aprilahijriyan/falca/tree/main/examples)
-
-# Installation
-
-Clone this repository and go to the directory:
-
-```
-git clone https://github.com/aprilahijriyan/falca
-cd falca
-```
-
-Initialize the environment with python v3.7 using [poetry](https://python-poetry.org/)
-
-```
-poetry env use $(which python3.7)
-```
-
-Install dependencies
-
-```
-poetry install --no-dev
-```

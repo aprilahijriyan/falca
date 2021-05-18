@@ -1,7 +1,7 @@
 from falca.middleware.files import FileStorage
 from falca.request import Request
 from falca.resource import Resource
-from falca.responses import JsonResponse
+from falca.responses import JSONResponse
 
 
 class Media(Resource):
@@ -18,4 +18,4 @@ class Media(Resource):
             with open(f.filename, "wb") as fp:
                 f.save(fp)
 
-        return JsonResponse({"success": 1})
+        return JSONResponse({"success": 1})
