@@ -18,6 +18,15 @@ app = ASGI(__name__)
 app.settings.from_envvar(envvar)
 
 
+@app.cli.command("runserver")
+def runserver():
+    """
+    Run it!!!
+    """
+
+    print("bakekok!")
+
+
 @app.get("/")
 async def index():
     return HTMLResponse("index.html", context={"body": "not bad!"})
