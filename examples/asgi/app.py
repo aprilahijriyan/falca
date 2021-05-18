@@ -2,7 +2,7 @@ import os
 
 from falcon.asgi.ws import WebSocket
 
-from falca.responses import HtmlResponse
+from falca.responses import HTMLResponse
 
 envvar = "FALCA_SETTINGS"
 os.environ.setdefault(envvar, "settings")
@@ -20,7 +20,7 @@ app.settings.from_envvar(envvar)
 
 @app.get("/")
 async def index():
-    return HtmlResponse("index.html", context={"body": "not bad!"})
+    return HTMLResponse("index.html", context={"body": "not bad!"})
 
 
 @app.websocket("/events")
