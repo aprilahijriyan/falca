@@ -48,7 +48,7 @@ Let's see how beautiful it is
 ```python
 from falca.app import ASGI
 from falca.resource import Resource
-from falca.responses import JsonResponse
+from falca.responses import JSONResponse
 from falca.schema import Schema
 from falca.annotations import Query
 from marshmallow import fields
@@ -65,7 +65,7 @@ class Simple(Resource):
         if not data:
             data = {"message": "Looks good?"}
 
-        return JsonResponse(data)
+        return JSONResponse(data)
 
 app = ASGI(__name__)
 app.add_route("/", Simple())
