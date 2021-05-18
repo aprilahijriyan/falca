@@ -10,6 +10,7 @@ from falcon.response import Response
 from falcon.status_codes import HTTP_422
 from mako.lookup import TemplateLookup
 from marshmallow.exceptions import ValidationError
+from typer import Typer
 
 from .helpers import get_http_description, get_root_path
 from .media.json import JSONHandler, JSONHandlerWS
@@ -27,6 +28,7 @@ class Scaffold:
     settings_class = Settings
     plugin_manager_class = PluginManager
     router_class = Router
+    cli_class = Typer
     media_handlers = {MEDIA_JSON: JSONHandler}
 
     def __init__(
@@ -62,6 +64,7 @@ class Scaffold:
 
             self.add_static_route(prefix, folder)
 
+        self.cli = self.cli_class(name=import_name)
         # rfc: https://falcon.readthedocs.io/en/latest/api/media.html#replacing-the-default-handlers
         self.req_options.media_handlers.update(self.media_handlers)
         self.resp_options.media_handlers.update(self.media_handlers)
