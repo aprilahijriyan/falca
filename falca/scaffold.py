@@ -19,7 +19,6 @@ from .middleware.json import JsonParserMiddleware
 from .middleware.resource import ResourceMiddleware
 from .plugin_manager import PluginManager
 from .request import ASGIRequest, Request
-from .resource import create_resource
 from .router import AsyncRouter, Router
 from .settings import Settings
 
@@ -80,8 +79,7 @@ class Scaffold:
 
     def route(self, path: str, methods: List[str] = ["get", "head"]):
         def decorated(func):
-            resource = create_resource(methods, func)()
-            self.add_route(path, resource)
+            self._router.route(path, methods)(func)
             return func
 
         return decorated
