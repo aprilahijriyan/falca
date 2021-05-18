@@ -59,7 +59,11 @@ class Command(Typer):
             add_completion=add_completion,
         )
         for ep in iter_entry_points("falca.commands"):
-            self.command(ep.name)(ep.load())
+            cmd = ep.load()
+            if isinstance(cmd, Typer):
+                self.add_typer(cmd)
+            else:
+                self.command(ep.name)(cmd)
 
     def init(
         self,
