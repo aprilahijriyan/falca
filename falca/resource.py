@@ -37,9 +37,13 @@ def create_resource(methods: List[str], view_func: Callable):
 
         wrapper = wraps(view_func)(responder)
         old_sig = inspect.signature(wrapper)
-        params = [inspect.Parameter("self", inspect.Parameter.POSITIONAL_ONLY)] + list(
-            inspect.signature(view_func).parameters.values()
-        )
+        params = list(inspect.signature(view_func).parameters.values())
+        for param in params:
+            assert (
+                param.name != "self"
+            ), "You cannot add the 'self' parameter to the 'view'"
+
+        params.insert(0, inspect.Parameter("self", inspect.Parameter.POSITIONAL_ONLY))
         new_sig = old_sig.replace(parameters=params)
         responder.__signature__ = new_sig  # boom
         responders["on_" + method.lower()] = wrapper

@@ -9,7 +9,7 @@ from resources.home import Home
 from resources.media import Media
 
 from falca.app import WSGI
-from falca.responses import HtmlResponse
+from falca.responses import HTMLResponse
 
 app = WSGI(__name__)
 app.settings.from_envvar(envvar)
@@ -17,7 +17,7 @@ app.settings.from_envvar(envvar)
 
 @app.get("/")
 def index():
-    return HtmlResponse("index.html", context={"body": "not bad!"})
+    return HTMLResponse("index.html", context={"body": "not bad!"})
 
 
 app.add_route("/home", Home())
