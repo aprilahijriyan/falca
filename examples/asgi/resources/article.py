@@ -1,38 +1,33 @@
-from marshmallow import fields
+from typing import List, Optional
 
-from falca.annotations import Body, Form, Query
+from falca.depends.pydantic import Body, Form, Query
 from falca.resource import Resource
 from falca.responses import JSONResponse
-from falca.schema import Schema
+from falca.serializers.pydantic import Schema
 
 
 class LimitOffsetSchema(Schema):
-    limit = fields.Int()
-    offset = fields.Int()
+    limit: Optional[int]
+    offset: Optional[int]
 
 
 class ArticleSchema(Schema):
-    title = fields.Str(required=True)
-    content = fields.Str(required=True)
-    categories = fields.List(fields.Str())
-    tags = fields.List(fields.Str())
-
-
-limit_offset_query = Query(LimitOffsetSchema())
-article_body = Body(ArticleSchema())
-article_form = Form(ArticleSchema())
+    title: str
+    content: str
+    categories: Optional[List[str]]
+    tags: Optional[List[str]]
 
 
 class Article(Resource):
-    async def on_get(self, query: limit_offset_query):
-        return JSONResponse(query.data)
+    async def on_get(self, query: dict = Query(LimitOffsetSchema)):
+        return JSONResponse(query)
 
-    async def on_post(self, body: article_body):
-        return JSONResponse(body.data)
+    async def on_post(self, body: dict = Body(ArticleSchema)):
+        return JSONResponse(body)
 
-    async def on_post_form(self, form: article_form):
+    async def on_post_form(self, form: dict = Form(ArticleSchema)):
         """
         Test form data with suffixes
         """
 
-        return JSONResponse(form.data)
+        return JSONResponse(form)

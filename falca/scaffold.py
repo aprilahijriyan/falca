@@ -3,30 +3,25 @@ from functools import partialmethod
 from typing import List, Tuple, Union
 
 from falcon.asgi import App as ASGIApp
-from falcon.asgi.response import Response as ASGIResponse
 from falcon.constants import MEDIA_JSON, WebSocketPayloadType
-from falcon.http_error import HTTPError
-from falcon.response import Response
-from falcon.status_codes import HTTP_422
 from mako.lookup import TemplateLookup
-from marshmallow.exceptions import ValidationError
 from typer import Typer
 
-from .helpers import get_http_description, get_root_path
+from . import handlers
+from .helpers import get_root_path
 from .media.json import JSONHandler, JSONHandlerWS
 from .middleware.files import FileParserMiddleware
 from .middleware.forms import FormParserMiddleware
 from .middleware.json import JsonParserMiddleware
 from .middleware.resource import ResourceMiddleware
-from .plugin_manager import PluginManager
-from .request import ASGIRequest, Request
+from .plugins.manager import PluginManager
 from .router import AsyncRouter, Router
 from .settings import Settings
 
 
 class Scaffold:
     settings_class = Settings
-    plugin_manager_class = PluginManager
+    plugins_class = PluginManager
     router_class = Router
     cli_class = Typer
     media_handlers = {MEDIA_JSON: JSONHandler}
@@ -57,7 +52,7 @@ class Scaffold:
         templates.insert(0, os.path.join(os.path.dirname(__file__), "templates"))
         self.template_folders = templates
         self.template_lookup = TemplateLookup(templates)
-        self.plugin_manager = self.plugin_manager_class(self)
+        self.plugins = self.plugins_class(self)
         for prefix, folder in static_folders:
             if not folder.startswith("/"):
                 folder = os.path.join(root_path, folder)
@@ -68,17 +63,14 @@ class Scaffold:
         # rfc: https://falcon.readthedocs.io/en/latest/api/media.html#replacing-the-default-handlers
         self.req_options.media_handlers.update(self.media_handlers)
         self.resp_options.media_handlers.update(self.media_handlers)
-        m_handler = self.marshmallow_handler
         if isinstance(self, ASGIApp):
             self.ws_options.media_handlers[WebSocketPayloadType.TEXT] = JSONHandlerWS
-            m_handler = self.marshmallow_handler_async
 
         self.add_middleware(ResourceMiddleware(self))
         self.add_middleware(FormParserMiddleware())
         self.add_middleware(JsonParserMiddleware())
         self.add_middleware(FileParserMiddleware())
-        self.set_error_serializer(self.error_serializer)
-        self.add_error_handler(ValidationError, m_handler)
+        self._set_default_error_handlers()
 
     def route(self, path: str, methods: List[str] = ["get", "head"]):
         def decorated(func):
@@ -108,38 +100,26 @@ class Scaffold:
 
         self._router.include_router(router)
 
-    def error_serializer(
-        self,
-        req: Union[Request, ASGIRequest],
-        resp: Union[Response, ASGIResponse],
-        exc: HTTPError,
-    ):
-        resp.content_type = MEDIA_JSON
-        resp.data = exc.to_json()
-
-    def marshmallow_handler(
-        self,
-        req: Union[Request, ASGIRequest],
-        resp: Union[Response, ASGIResponse],
-        exc: ValidationError,
-        *args,
-    ):
-        resp.status = HTTP_422
-        resp.content_type = MEDIA_JSON
-        resp.media = {
-            "status": {"code": 422, "description": get_http_description(422)},
-            "data": exc.messages,
-        }
-
-    async def marshmallow_handler_async(
-        self, req: ASGIRequest, resp: ASGIResponse, exc: ValidationError, *args
-    ):
-        self.marshmallow_handler(req, resp, exc, *args)
-
     def make_shell_context(self):
         return {
             "app": self,
             "router": self._router,
-            "plugin": self.plugin_manager,
+            "plugins": self.plugins,
             "templates": self.template_lookup,
         }
+
+    def _set_default_error_handlers(self):
+        self.set_error_serializer(handlers.http_handler)
+        exc = handlers.MarshmallowValidationError
+        if exc:
+            if isinstance(self, ASGIApp):
+                self.add_error_handler(exc, handlers.marshmallow_handler_async)
+            else:
+                self.add_error_handler(exc, handlers.marshmallow_handler)
+
+        exc = handlers.PydanticValidationError
+        if exc:
+            if isinstance(self, ASGIApp):
+                self.add_error_handler(exc, handlers.pydantic_handler_async)
+            else:
+                self.add_error_handler(exc, handlers.pydantic_handler)

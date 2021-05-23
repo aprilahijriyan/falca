@@ -2,6 +2,20 @@
 Reference: https://pythonspeed.com/articles/faster-json-library/
 """
 
+from functools import partial
+
+try:
+    from pydantic import BaseModel as PydanticSchema
+except ImportError:
+    PydanticSchema = None
+
+
+def _json_default(o: object):
+    if PydanticSchema is not None and isinstance(o, PydanticSchema):
+        return o.dict()
+    raise ValueError(f"unknown object {o!r}")
+
+
 try:
     import orjson as json
 
@@ -14,11 +28,16 @@ try:
         kwds["option"] = option
         return _dumps(*args, **kwds).decode()
 
-    json.dumps = dumps
 
 except ImportError:
     try:
         import rapidjson as json
 
+        dumps = json.dumps
+
     except ImportError:
         import json
+
+        dumps = json.dumps
+
+json.dumps = partial(dumps, default=_json_default)

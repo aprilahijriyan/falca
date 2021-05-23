@@ -5,7 +5,6 @@ from falcon.asgi.response import Response as ASGIResponse
 from falcon.asgi.ws import WebSocket
 from falcon.response import Response
 
-from ..helpers import get_plugins
 from ..request import ASGIRequest, Request
 from .base import Middleware
 
@@ -19,12 +18,6 @@ class ResourceMiddleware(Middleware):
 
         req.context.app = self.app
         req.context.templates = self.app.template_lookup
-        plugins = getattr(resource, "_cached_plugins", False)
-        if not plugins:
-            plugins = get_plugins(req, resource)
-            for k, v in plugins.items():
-                setattr(resource, k, v)
-            resource._cached_plugins = True
 
     async def process_resource_async(
         self, req: ASGIRequest, resp: ASGIResponse, resource: object, *args
