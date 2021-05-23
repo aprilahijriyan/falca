@@ -79,3 +79,5 @@ class AsyncRouter(Router):
     def add_route(self, uri_template: str, resource: object, **kwargs):
         kwargs["_asgi"] = True
         super().add_route(uri_template, resource, **kwargs)
+
+    websocket = partialmethod(Router.route, methods=["websocket"])
