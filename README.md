@@ -2,8 +2,8 @@
 
 <p align="center">
 Falca is an intuitive REST APIs framework.<br>
-Powered by [falcon framework](https://falconframework.org/).<br><br>
-:warning: _**Production ready soon!**_ :construction:<br>
+Powered by https://falconframework.org/.<br><br>
+:warning: <i><strong>Production ready soon!</strong></i> :construction:<br>
 </p>
 
 Goals of this project:
