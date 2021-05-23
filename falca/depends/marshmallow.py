@@ -1,4 +1,4 @@
-from typing import Union
+from typing import Any, Dict, Union
 
 from ..request import ASGIRequest, Request
 from ..serializers.marshmallow import Schema
@@ -6,7 +6,7 @@ from .base import Depends
 
 
 class Marshmallow(Depends):
-    def __init__(self, schema: Union[Schema, dict]) -> None:
+    def __init__(self, schema: Union[Schema, Dict[str, Any]]) -> None:
         assert isinstance(
             schema, (Schema, dict)
         ), f"schema type must be of type {Schema!r} or dict"

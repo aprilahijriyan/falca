@@ -1,3 +1,5 @@
+from typing import Dict
+
 from falcon.app import App
 
 from ..helpers import import_attr
@@ -6,7 +8,7 @@ from ..helpers import import_attr
 class PluginManager:
     def __init__(self, app: App) -> None:
         self.app = app
-        self.storage = {}
+        self.storage: Dict[str, object] = {}
 
     def has(self, name: str):
         return name in self.storage

@@ -1,4 +1,4 @@
-from typing import Union
+from typing import Optional, Type, Union
 from unittest import TestCase as _TestCase
 from urllib.parse import urlencode
 
@@ -65,8 +65,8 @@ class TestClient(_TestClient):
     def __init__(
         self,
         app: Union[WSGI, ASGI],
-        headers: dict = None,
-        conductor_class: ASGIConductor = ASGIConductor,
+        headers: Optional[dict] = None,
+        conductor_class: Type[ASGIConductor] = ASGIConductor,
     ):
         klass = type(app)
         assert (

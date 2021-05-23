@@ -95,6 +95,6 @@ def get_argnotations(func: Callable) -> Dict[str, type]:
 def get_http_description(status_or_code: Union[str, int]):
     status = status_or_code
     if isinstance(status, int):
-        status = falcon.code_to_http_status(status)
+        status: str = falcon.code_to_http_status(status)
 
     return status.split(" ", 1)[1]

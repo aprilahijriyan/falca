@@ -1,5 +1,5 @@
 from io import BytesIO
-from typing import List, TextIO
+from typing import Dict, List, TextIO, Union
 
 from falcon import MEDIA_MULTIPART
 from falcon.asgi.response import Response as ASGIResponse
@@ -13,7 +13,12 @@ from .base import Middleware
 
 class FileStorage:
     def __init__(
-        self, stream: TextIO, filename: str, name: str, content_type: str, headers: dict
+        self,
+        stream: BytesIO,
+        filename: str,
+        name: str,
+        content_type: str,
+        headers: dict,
     ) -> None:
         self.stream = stream
         self.filename = filename
@@ -35,9 +40,9 @@ class FileParserMiddleware(Middleware):
     content_type = MEDIA_MULTIPART
 
     def process_request(self, req: Request, resp: Response):
-        files = {}
+        files: Dict[str, Union[List[FileStorage], FileStorage]] = {}
         if self.is_valid_content_type(req):
-            forms = {}
+            forms: Dict[str, Union[List[str], str]] = {}
             parts: List[BodyPart] = req.get_media()
             for part in parts:
                 name = part.name
@@ -75,9 +80,9 @@ class FileParserMiddleware(Middleware):
         req.files = files
 
     async def process_request_async(self, req: ASGIRequest, resp: ASGIResponse):
-        files = {}
+        files: Dict[str, Union[List[FileStorage], FileStorage]] = {}
         if self.is_valid_content_type(req):
-            forms = {}
+            forms: Dict[str, Union[List[str], str]] = {}
             parts: List[BodyPart] = await req.get_media()
             async for part in parts:
                 name = part.name

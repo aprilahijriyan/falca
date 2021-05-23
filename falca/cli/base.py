@@ -108,8 +108,8 @@ class Command(Typer):
             return
 
         if version:
-            version = get_distribution("falca").version
-            cprint(f":package: Falca v{version}")
+            v = get_distribution("falca").version
+            cprint(f":package: Falca v{v}")
             raise Exit
 
         ctx.obj = self.app

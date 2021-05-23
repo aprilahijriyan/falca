@@ -1,5 +1,5 @@
 from functools import partialmethod
-from typing import List, Union
+from typing import List, Optional, Union
 
 from falcon.routing import CompiledRouter
 
@@ -8,10 +8,10 @@ from .resource import create_resource
 
 
 class Router(CompiledRouter):
-    def __init__(self, *, url_prefix: str = None):
+    def __init__(self, *, url_prefix: Optional[str] = None):
         self.url_prefix = url_prefix
         self.children: List[Router] = []
-        self._uri_mapping = []
+        self._uri_mapping: List[str] = []
         super().__init__()
 
     def route(self, path: str, methods: List[str] = ["get", "head"]):

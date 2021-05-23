@@ -1,5 +1,5 @@
 from functools import wraps
-from typing import Any, AsyncGenerator, Generator, Tuple, Union
+from typing import Any, AsyncGenerator, Dict, Generator, List, Tuple, Union
 
 from falcon.asgi.response import Response as _ASGIResponse
 from falcon.constants import MEDIA_HTML, MEDIA_JSON, MEDIA_TEXT
@@ -23,7 +23,7 @@ class Response:
         self.status = status
         self.content_type = content_type or self.content_type
         self.headers = headers
-        self._stacked = {}
+        self._stacked: Dict[str, List[Tuple[Any, Dict[str, Any]]]] = {}
 
     def _save_args(self, key: str, args: Tuple[Any], kwds: dict):
         try:
