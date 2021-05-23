@@ -1,8 +1,10 @@
 # Falca
 
-Falca is an intuitive REST APIs framework based on the falcon framework.
-
-:warning: _**Production ready soon!**_ :construction:
+<p align="center">
+Falca is an intuitive REST APIs framework.<br>
+Powered by [falcon framework](https://falconframework.org/).<br><br>
+:warning: _**Production ready soon!**_ :construction:<br>
+</p>
 
 Goals of this project:
 
@@ -18,9 +20,12 @@ Goals of this project:
 - [x] Dependency injection
 - [x] Resource shortcut (`get`, `post`, `put`, `delete`, `websocket`, etc)
 
-The project design planning has been described in [DESIGN.md](https://github.com/aprilahijriyan/falca/blob/d72c3e0570975e6960a1586ba0defe5b132f1963/DESIGN.md).
 
-Also, if you want to contribute like bug fixes, feature additions, etc. Please read our [contribution guidelines](https://github.com/aprilahijriyan/falca/blob/main/CONTRIBUTING.md) first.
+# Contribution
+
+**Do not hesitate!**
+
+if you want to contribute like bug fixes, feature additions, etc. Please read our [contribution guidelines](https://github.com/aprilahijriyan/falca/blob/main/CONTRIBUTING.md).
 
 # Installation
 
