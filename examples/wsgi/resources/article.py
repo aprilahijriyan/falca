@@ -1,9 +1,9 @@
 from marshmallow import fields
 
-from falca.annotations import Body, Form, Query
+from falca.depends.marshmallow import Body, Form, Query
 from falca.resource import Resource
 from falca.responses import JSONResponse
-from falca.schema import Schema
+from falca.serializers.marshmallow import Schema
 
 
 class LimitOffsetSchema(Schema):
@@ -18,29 +18,24 @@ class ArticleSchema(Schema):
     tags = fields.List(fields.Str())
 
 
-limit_offset_query = Query(LimitOffsetSchema())
-article_body = Body(ArticleSchema())
-article_form = Form(ArticleSchema())
-
-
 class Article(Resource):
-    def on_get(self, query: limit_offset_query):
+    def on_get(self, query: dict = Query(LimitOffsetSchema())):
         """
         Test query parameters
         """
 
-        return JSONResponse(query.data)
+        return JSONResponse(query)
 
-    def on_post(self, body: article_body):
+    def on_post(self, body: dict = Body(ArticleSchema())):
         """
         Test json body
         """
 
-        return JSONResponse(body.data)
+        return JSONResponse(body)
 
-    def on_post_form(self, form: article_form):
+    def on_post_form(self, form: dict = Form(ArticleSchema())):
         """
         Test form data with suffixes
         """
 
-        return JSONResponse(form.data)
+        return JSONResponse(form)

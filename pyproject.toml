@@ -10,15 +10,16 @@ python = "^3.7"
 falcon = "^3.0.0"
 Mako = "^1.1.4"
 six = "^1.15.0"
-marshmallow = "^3.11.1"
 typer = {extras = ["all"], version = "^0.3.2"}
 rich = "^10.1.0"
 requests-toolbelt = "^0.9.1"
 ipython = "^7.23.1"
+typing-inspect = "^0.6.0"
 
 [tool.poetry.dev-dependencies]
 pre-commit = "^2.12.1"
 httpie = "^2.4.0"
+pylint = "^2.8.2"
 
 [tool.poetry.scripts]
 

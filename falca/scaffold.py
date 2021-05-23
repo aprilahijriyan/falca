@@ -18,7 +18,7 @@ from .middleware.files import FileParserMiddleware
 from .middleware.forms import FormParserMiddleware
 from .middleware.json import JsonParserMiddleware
 from .middleware.resource import ResourceMiddleware
-from .plugin_manager import PluginManager
+from .plugins.manager import PluginManager
 from .request import ASGIRequest, Request
 from .router import AsyncRouter, Router
 from .settings import Settings
@@ -26,7 +26,7 @@ from .settings import Settings
 
 class Scaffold:
     settings_class = Settings
-    plugin_manager_class = PluginManager
+    plugins_class = PluginManager
     router_class = Router
     cli_class = Typer
     media_handlers = {MEDIA_JSON: JSONHandler}
@@ -57,7 +57,7 @@ class Scaffold:
         templates.insert(0, os.path.join(os.path.dirname(__file__), "templates"))
         self.template_folders = templates
         self.template_lookup = TemplateLookup(templates)
-        self.plugin_manager = self.plugin_manager_class(self)
+        self.plugins = self.plugins_class(self)
         for prefix, folder in static_folders:
             if not folder.startswith("/"):
                 folder = os.path.join(root_path, folder)
@@ -140,6 +140,6 @@ class Scaffold:
         return {
             "app": self,
             "router": self._router,
-            "plugin": self.plugin_manager,
+            "plugins": self.plugins,
             "templates": self.template_lookup,
         }

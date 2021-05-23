@@ -1,8 +1,15 @@
-from marshmallow import Schema as BaseSchema
-from marshmallow.schema import SchemaMeta
+try:
+    from marshmallow import Schema as BaseSchema
+    from marshmallow.schema import SchemaMeta
+
+except ImportError:
+    raise ImportError(
+        "You need to install the 'marshmallow' module if you want to use 'falca.serializers.marshmallow'"
+    )
+
 from six import with_metaclass
 
-from .compat import json
+from ..compat import json
 
 
 class SchemaConfig:
@@ -15,9 +22,8 @@ class DefaultSchemaMeta(SchemaMeta):
         if config:
             config.render_module = json
         else:
-            config = SchemaConfig
+            setattr(cls, "Meta", SchemaConfig)
 
-        setattr(cls, "Meta", config)
         instance = cls.__new__(cls)
         instance.__init__(*args, **kwds)
         return instance

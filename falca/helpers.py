@@ -2,14 +2,12 @@ import inspect
 import os
 import pkgutil
 import sys
-import types
 from importlib import import_module
 from typing import Callable, Dict, Union
 
 import falcon
 
-from .exceptions import PluginNotFound
-from .request import ASGIRequest, Request
+from .depends import Depends
 
 
 def abort(code: int, **kwagrs):
@@ -26,11 +24,6 @@ def import_attr(module: str):
     pkg, name = module.rsplit(".", 1)
     mod = import_module(pkg)
     return getattr(mod, name)
-
-
-def extract_plugins(obj: object) -> list:
-    plugins = getattr(obj, "__plugins__", [])
-    return plugins
 
 
 def get_root_path(import_name: str):
@@ -78,10 +71,6 @@ def get_root_path(import_name: str):
     return os.path.dirname(os.path.abspath(filepath))
 
 
-def isclass(obj: object):
-    return isinstance(obj, type) or type(obj) is not types.FunctionType
-
-
 def get_argnotations(func: Callable) -> Dict[str, type]:
     sig = inspect.signature(func)
     params = {}
@@ -90,24 +79,17 @@ def get_argnotations(func: Callable) -> Dict[str, type]:
         if name == "self":
             continue
 
-        atype = p._annotation
-        if atype is not inspect._empty:
-            params[name] = atype
+        atype = p.annotation
+        default = p.default
+        if isinstance(default, Depends):
+            atype = default
+
+        if atype is inspect._empty:
+            continue
+
+        params[name] = atype
 
     return params
-
-
-def get_plugins(req: Union[Request, ASGIRequest], resource: object):
-    plugins = {}
-    manager = req.context.app.plugin_manager
-    for name in extract_plugins(resource):
-        plugin = manager.get(name)
-        if not plugin:
-            raise PluginNotFound(name)
-
-        plugins[name] = plugin
-
-    return plugins
 
 
 def get_http_description(status_or_code: Union[str, int]):
