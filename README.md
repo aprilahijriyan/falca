@@ -1,5 +1,7 @@
 # Falca
 
+<img align="center" src="https://github.com/aprilahijriyan/falca/blob/main/falca.jpeg">
+
 <p align="center">
 Falca is an intuitive REST APIs framework.<br>
 Powered by https://falconframework.org/.<br><br>
