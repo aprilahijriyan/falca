@@ -7,7 +7,7 @@ Falca is an intuitive REST APIs framework based on the falcon framework.
 Goals of this project:
 
 - [x] Validates request body based on type hints.
-- [x] Marshmallow support as default object serialization and deserialization
+- [x] (Pydantic & Marshmallow) support as object serialization and deserialization
 - [x] Request body mapping
 - [x] Nested routers
 - [ ] Plugin support
@@ -15,6 +15,8 @@ Goals of this project:
 - [x] Async Support
 - [ ] OpenAPI (Swagger & Redoc)
 - [x] CLI
+- [x] Dependency injection
+- [x] Resource shortcut (`get`, `post`, `put`, `delete`, `websocket`, etc)
 
 The project design planning has been described in [DESIGN.md](https://github.com/aprilahijriyan/falca/blob/d72c3e0570975e6960a1586ba0defe5b132f1963/DESIGN.md).
 
@@ -46,29 +48,28 @@ poetry install --no-dev
 Let's see how beautiful it is
 
 ```python
+# app.py
+
+from typing import Optional
+
 from falca.app import ASGI
+from falca.depends.pydantic import Query
 from falca.resource import Resource
 from falca.responses import JSONResponse
-from falca.schema import Schema
-from falca.annotations import Query
-from marshmallow import fields
+from falca.serializers.pydantic import Schema
+
 
 class LimitOffsetSchema(Schema):
-    limit = fields.Int()
-    offset = fields.Int()
-
-LimitOffsetQuery = Query(LimitOffsetSchema())
+    limit: Optional[int]
+    offset: Optional[int]
 
 class Simple(Resource):
-    async def on_get(self, query: LimitOffsetQuery):
-        data = query.data
-        if not data:
-            data = {"message": "Looks good?"}
-
-        return JSONResponse(data)
+    async def on_get(self, query: dict = Query(LimitOffsetSchema)):
+        return JSONResponse(query)
 
 app = ASGI(__name__)
 app.add_route("/", Simple())
+
 ```
 
 Save the code above with filename `app.py`
