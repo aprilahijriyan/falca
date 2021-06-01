@@ -1,7 +1,7 @@
 # Falca
 
 <p align="center">
-<img width="150" height="150" src="https://raw.githubusercontent.com/aprilahijriyan/falca/main/falca.jpeg">
+<img width="90%" height="330" src="https://raw.githubusercontent.com/aprilahijriyan/falca/main/falca.png">
 </p>
 
 <p align="center">
