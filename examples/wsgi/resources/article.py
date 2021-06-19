@@ -1,7 +1,6 @@
 from marshmallow import fields
 
 from falca.depends.marshmallow import Body, Form, Query
-from falca.resource import Resource
 from falca.responses import JSONResponse
 from falca.serializers.marshmallow import Schema
 
@@ -18,7 +17,7 @@ class ArticleSchema(Schema):
     tags = fields.List(fields.Str())
 
 
-class Article(Resource):
+class Article:
     def on_get(self, query: dict = Query(LimitOffsetSchema())):
         """
         Test query parameters

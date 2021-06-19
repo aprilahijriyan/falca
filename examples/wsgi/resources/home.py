@@ -1,8 +1,7 @@
-from falca.resource import Resource
 from falca.responses import HTMLResponse
 
 
-class Home(Resource):
+class Home:
     def on_get(self):
         """
         Test html templates
