@@ -2,11 +2,10 @@ from app import app
 from pytest import mark, raises
 
 from falca.exceptions import BadRouter, EndpointConflict
-from falca.resource import Resource
 from falca.router import AsyncRouter
 
 
-class Simple(Resource):
+class Simple:
     async def on_get(self):
         pass
 

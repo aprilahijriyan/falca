@@ -1,10 +1,9 @@
 from falca.middleware.files import FileStorage
 from falca.request import ASGIRequest
-from falca.resource import Resource
 from falca.responses import JSONResponse
 
 
-class Media(Resource):
+class Media:
     async def on_post(self, request: ASGIRequest):
         files: FileStorage = request.files["file"]
         if not isinstance(files, list):

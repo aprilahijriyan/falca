@@ -4,7 +4,7 @@ from typing import List, Optional, Union
 from falcon.routing import CompiledRouter
 
 from .exceptions import BadRouter, EndpointConflict, FalcaError
-from .resource import create_resource
+from .resource import create_resource, prepare_resource
 
 
 class Router(CompiledRouter):
@@ -37,6 +37,7 @@ class Router(CompiledRouter):
 
         self._check_endpoint(uri_template)
         self._uri_mapping.append(uri_template)
+        prepare_resource(resource)
         super().add_route(uri_template, resource, **kwargs)
 
     def _check_endpoint(self, uri_template: str):
