@@ -63,7 +63,6 @@ from typing import Optional
 
 from falca.app import ASGI
 from falca.depends.pydantic import Query
-from falca.resource import Resource
 from falca.responses import JSONResponse
 from falca.serializers.pydantic import Schema
 
@@ -72,7 +71,7 @@ class LimitOffsetSchema(Schema):
     limit: Optional[int]
     offset: Optional[int]
 
-class Simple(Resource):
+class Simple:
     async def on_get(self, query: dict = Query(LimitOffsetSchema)):
         return JSONResponse(query)
 
