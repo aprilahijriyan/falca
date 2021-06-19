@@ -1,5 +1,4 @@
 from typing import Optional, Type, Union
-from unittest import TestCase as _TestCase
 from urllib.parse import urlencode
 
 from falcon.constants import MEDIA_URLENCODED
@@ -111,13 +110,3 @@ class TestClient(_TestClient):
     options = _TestClient.simulate_options
     delete = _TestClient.simulate_delete
     request = simulate_request
-
-
-class TestCase(_TestCase, TestClient):
-    def set_app(self, app: Union[WSGI, ASGI], **kwargs):
-        klass = type(app)
-        assert (
-            klass is WSGI or klass is ASGI
-        ), "The app must be an instance object of falca.app.WSGI or falca.app.ASGI"
-        self.app = app
-        TestClient.__init__(self, app, **kwargs)
