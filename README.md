@@ -16,7 +16,7 @@ Goals of this project:
 - [x] (Pydantic & Marshmallow) support as object serialization and deserialization
 - [x] Request body mapping
 - [x] Nested routers
-- [ ] Plugin support
+- [x] Plugin support
 - [x] Settings (Global Configuration) support
 - [x] Async Support
 - [ ] OpenAPI (Swagger & Redoc)
