@@ -25,7 +25,7 @@ class Article:
 
         return JSONResponse(query)
 
-    def on_post(self, body: dict = Body(ArticleSchema())):
+    def on_post(self, body: dict = Body(ArticleSchema)):
         """
         Test json body
         """
