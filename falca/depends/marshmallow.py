@@ -1,17 +1,20 @@
 from typing import Any, Dict, Union
 
 from ..request import ASGIRequest, Request
-from ..serializers.marshmallow import Schema
+from ..serializers.marshmallow import DefaultSchemaMeta, Schema
 from .base import Depends
 
 
 class Marshmallow(Depends):
     def __init__(self, schema: Union[Schema, Dict[str, Any]]) -> None:
-        assert isinstance(
-            schema, (Schema, dict)
-        ), f"schema type must be of type {Schema!r} or dict"
         if isinstance(schema, dict):
             schema = Schema.from_dict(schema)
+        elif type(schema) is DefaultSchemaMeta:
+            schema = schema()
+        elif isinstance(schema, Schema):
+            pass
+        else:
+            raise TypeError(f"schema type must be of type {Schema!r} or dict")
 
         self.schema: Schema = schema
 

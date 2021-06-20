@@ -4,6 +4,19 @@ version = "0.1.0"
 description = "Falca is an intuitive REST APIs framework based on the falcon framework."
 authors = ["aprilahijriyan <hijriyan23@gmail.com>"]
 license = "MIT"
+readme = "README.md"
+homepage = "https://github.com/aprilahijriyan/falca"
+repository = "https://github.com/aprilahijriyan/falca"
+keywords = ["wsgi", "asgi", "framework", "rest api"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Environment :: Web Environment",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Topic :: Software Development :: Libraries :: Application Frameworks"
+]
 
 [tool.poetry.dependencies]
 python = "^3.7"

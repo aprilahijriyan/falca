@@ -1,7 +1,6 @@
 from typing import List, Optional
 
 from falca.depends.pydantic import Body, Form, Query
-from falca.resource import Resource
 from falca.responses import JSONResponse
 from falca.serializers.pydantic import Schema
 
@@ -18,7 +17,7 @@ class ArticleSchema(Schema):
     tags: Optional[List[str]]
 
 
-class Article(Resource):
+class Article:
     async def on_get(self, query: dict = Query(LimitOffsetSchema)):
         return JSONResponse(query)
 

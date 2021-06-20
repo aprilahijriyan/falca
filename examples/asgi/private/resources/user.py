@@ -1,10 +1,9 @@
 import asyncio
 
-from falca.resource import Resource
 from falca.responses import JSONResponse
 
 
-class User(Resource):
+class User:
     async def on_get(self):
         await asyncio.sleep(5)
         return JSONResponse(

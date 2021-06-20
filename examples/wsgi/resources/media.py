@@ -1,10 +1,9 @@
 from falca.middleware.files import FileStorage
 from falca.request import Request
-from falca.resource import Resource
 from falca.responses import JSONResponse
 
 
-class Media(Resource):
+class Media:
     def on_post(self, request: Request):
         """
         Test multipart/form-data
