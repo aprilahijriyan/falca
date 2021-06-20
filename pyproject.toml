@@ -20,6 +20,8 @@ typing-inspect = "^0.6.0"
 pre-commit = "^2.12.1"
 httpie = "^2.4.0"
 pylint = "^2.8.2"
+pytest = "^6.2.4"
+pytest-asyncio = "^0.15.1"
 
 [tool.poetry.scripts]
 
