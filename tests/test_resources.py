@@ -2,7 +2,6 @@ import asyncio
 
 import pytest
 
-from falca.resource import Resource
 from falca.responses import JSONResponse
 
 data = [{"name": "kwoakwoakow", "email": "kwoakwoakow@land.com"}]
@@ -10,13 +9,14 @@ data = [{"name": "kwoakwoakow", "email": "kwoakwoakow@land.com"}]
 default = JSONResponse(data)
 
 
-class Users(Resource):
+class Users:
     def on_get(self):
         return default
 
 
-class AsyncUsers(Resource):
+class AsyncUsers:
     async def on_get(self):
+        await asyncio.sleep(5)
         return default
 
 
