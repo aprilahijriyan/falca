@@ -1,4 +1,4 @@
-from typing import Dict
+from typing import Dict, Union
 
 from falcon.app import App
 
@@ -20,8 +20,11 @@ class PluginManager:
             raise PluginError(f"plugin {name!r} not found")
         return self.storage.get(name)
 
-    def install(self, src: str, name: str = None):
-        plugin = import_attr(src)
+    def install(self, src: Union[object, str], name: str = None):
+        plugin = src
+        if isinstance(src, str):
+            plugin = import_attr(plugin)
+
         if not issubclass(plugin, BasePlugin):
             raise PluginError(f"invalid plugin object {plugin}")
 
