@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Q & A
+    url: https://github.com/aprilahijriyan/falca/discussions/new
+    about: Please ask and answer questions here.
