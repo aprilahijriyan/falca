@@ -33,7 +33,13 @@ if you want to contribute like bug fixes, feature additions, etc. Please read ou
 
 # Installation
 
-Clone this repository and go to the directory:
+Using `pip`:
+
+```
+pip install falca
+```
+
+Alternatively, clone this repository and go to the `falca` directory:
 
 ```
 git clone https://github.com/aprilahijriyan/falca
