@@ -70,7 +70,7 @@ if PydanticValidationError:
         resp.content_type = MEDIA_JSON
         resp.media = {
             "status": {"code": 422, "description": get_http_description(422)},
-            "data": exc.json(indent=0),
+            "data": exc.errors(),
         }
 
     async def pydantic_handler_async(
