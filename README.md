@@ -24,6 +24,9 @@ Goals of this project:
 - [x] Dependency injection
 - [x] Resource shortcut (`get`, `post`, `put`, `delete`, `websocket`, etc)
 
+Features (unreleased):
+
+- [x] Routing sub-application
 
 # Contribution
 
