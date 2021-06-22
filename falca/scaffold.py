@@ -8,6 +8,7 @@ from mako.lookup import TemplateLookup
 from typer import Typer
 
 from . import handlers
+from .exceptions import FalcaError
 from .helpers import get_root_path
 from .media.json import JSONHandler, JSONHandlerWS
 from .middleware.files import FileParserMiddleware
@@ -66,6 +67,7 @@ class Scaffold:
         if isinstance(self, ASGIApp):
             self.ws_options.media_handlers[WebSocketPayloadType.TEXT] = JSONHandlerWS
 
+        self.apps = {}
         self.add_middleware(ResourceMiddleware(self))
         self.add_middleware(FormParserMiddleware())
         self.add_middleware(JsonParserMiddleware())
@@ -99,6 +101,24 @@ class Scaffold:
             ), f"Router {router!r} must be an instance object of falca.router.Router"
 
         self._router.include_router(router)
+
+    def mount(self, path: str, app: "Scaffold"):
+        if path in self.apps:
+            raise FalcaError(f"Application is already registered with path {path}")
+
+        self.apps[path] = app
+
+    def find_app(self, env: dict):
+        key = "PATH_INFO" if not isinstance(self, ASGIApp) else "path"
+        path_info = env.get(key, "")
+        if not path_info:
+            return
+
+        for path, app in self.apps.items():
+            if path_info.startswith(path):
+                path_info = "/" + path_info.replace(path, "", 1).lstrip("/")
+                env[key] = path_info
+                return app
 
     def make_shell_context(self):
         return {
