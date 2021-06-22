@@ -1,5 +1,5 @@
 from functools import partialmethod
-from typing import List, Optional, Union
+from typing import Callable, List, Optional, Union
 
 from falcon.routing import CompiledRouter
 
@@ -16,8 +16,7 @@ class Router(CompiledRouter):
 
     def route(self, path: str, methods: List[str] = ["get", "head"]):
         def decorated(func):
-            resource = create_resource(methods, func)()
-            self.add_route(path, resource)
+            self.add_route(path, func, methods)
             return func
 
         return decorated
@@ -31,7 +30,19 @@ class Router(CompiledRouter):
     patch = partialmethod(route, methods=["patch"])
     trace = partialmethod(route, methods=["trace"])
 
-    def add_route(self, uri_template: str, resource: object, **kwargs):
+    def add_route(
+        self,
+        uri_template: str,
+        resource: Union[object, Callable],
+        methods: List[str] = [],
+        **kwargs,
+    ):
+        if methods:
+            if not callable(resource):
+                raise TypeError(f"resource {resource!r} must be function type")
+
+            resource = create_resource(methods, resource)()
+
         if self.url_prefix:
             uri_template = self.url_prefix + uri_template
 
@@ -77,8 +88,14 @@ class Router(CompiledRouter):
 
 
 class AsyncRouter(Router):
-    def add_route(self, uri_template: str, resource: object, **kwargs):
+    def add_route(
+        self,
+        uri_template: str,
+        resource: Union[object, Callable],
+        methods: List[str] = [],
+        **kwargs,
+    ):
         kwargs["_asgi"] = True
-        super().add_route(uri_template, resource, **kwargs)
+        super().add_route(uri_template, resource, methods, **kwargs)
 
     websocket = partialmethod(Router.route, methods=["websocket"])
