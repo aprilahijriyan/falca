@@ -16,7 +16,7 @@ class Router(CompiledRouter):
 
     def route(self, path: str, methods: List[str] = ["get", "head"]):
         def decorated(func):
-            self.add_route(path, func, methods)
+            self.add_route(path, func, methods=methods)
             return func
 
         return decorated
@@ -34,6 +34,7 @@ class Router(CompiledRouter):
         self,
         uri_template: str,
         resource: Union[object, Callable],
+        *,
         methods: List[str] = [],
         **kwargs,
     ):
@@ -92,10 +93,12 @@ class AsyncRouter(Router):
         self,
         uri_template: str,
         resource: Union[object, Callable],
+        *,
         methods: List[str] = [],
         **kwargs,
     ):
+        kwargs["methods"] = methods
         kwargs["_asgi"] = True
-        super().add_route(uri_template, resource, methods, **kwargs)
+        super().add_route(uri_template, resource, **kwargs)
 
     websocket = partialmethod(Router.route, methods=["websocket"])
