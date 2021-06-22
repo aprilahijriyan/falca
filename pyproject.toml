@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "falca"
-version = "1.3.0"
+version = "2.0.0"
 description = "Falca is an intuitive REST APIs framework based on the falcon framework."
 authors = ["aprilahijriyan <hijriyan23@gmail.com>"]
 license = "MIT"
