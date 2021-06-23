@@ -1,4 +1,5 @@
 from functools import wraps
+from mimetypes import guess_type
 from typing import Any, AsyncGenerator, Dict, Generator, List, Tuple, Union
 
 from falcon.asgi.response import Response as _ASGIResponse
@@ -91,11 +92,11 @@ class HTMLResponse(Response):
         html = t.render(**self.context)
         return html
 
-    def build(
+    def build_content(
         self, req: Union[Request, ASGIRequest], resp: Union[_Response, _ASGIResponse]
     ):
         self.content = self.render(req)
-        super().build(req, resp)
+        return super().build_content(req, resp)
 
 
 class JSONResponse(Response):
@@ -120,6 +121,28 @@ class StreamingResponse(Response):
         self, req: Union[Request, ASGIRequest], resp: Union[_Response, _ASGIResponse]
     ):
         resp.stream = self.content
+
+
+class FileResponse(StreamingResponse):
+    """
+    Reference: https://falcon.readthedocs.io/en/stable/user/recipes/output-csv.html
+    """
+
+    def __init__(
+        self, filename: str, content: Union[str, AsyncGenerator, Generator], **kwds
+    ):
+        self.filename = filename
+        kwds["content_type"] = guess_type(filename)[0]
+        super().__init__(content, **kwds)
+
+    def build_content(
+        self, req: Union[Request, ASGIRequest], resp: Union[_Response, _ASGIResponse]
+    ):
+        resp.downloadable_as = self.filename
+        if isinstance(self.content, str):
+            resp.text = self.content
+        else:
+            resp.stream = self.content
 
 
 class StreamingVideoResponse(StreamingResponse):
