@@ -2,7 +2,7 @@
 
 ![Logo](https://raw.githubusercontent.com/aprilahijriyan/falca/main/falca.png)
 
-![PyPI - Downloads](https://img.shields.io/pypi/dm/falca?color=yellow&logo=python) ![PyPI](https://img.shields.io/pypi/v/falca?color=yellow&logo=python) ![Scrutinizer code quality (GitHub/Bitbucket)](https://img.shields.io/scrutinizer/quality/g/aprilahijriyan/falca/main?logo=scrutinizer) ![Black Formatter](https://img.shields.io/badge/code%20style-black-000000.svg)
+![PyPI - Downloads](https://img.shields.io/pypi/dm/falca?color=yellow&logo=python) ![PyPI](https://img.shields.io/pypi/v/falca?color=yellow&logo=python) ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/falca?color=purple&logo=python&logoColor=yellow) ![PyPI - Format](https://img.shields.io/pypi/format/falca?logo=python&logoColor=yellow) ![PyPI - Status](https://img.shields.io/pypi/status/falca?color=red) ![PyPI - License](https://img.shields.io/pypi/l/falca?color=black) ![GitHub issues](https://img.shields.io/github/issues/aprilahijriyan/falca?logo=github) ![GitHub closed issues](https://img.shields.io/github/issues-closed/aprilahijriyan/falca?color=green&logo=github) ![Scrutinizer code quality (GitHub/Bitbucket)](https://img.shields.io/scrutinizer/quality/g/aprilahijriyan/falca/main?logo=scrutinizer) ![Black Formatter](https://img.shields.io/badge/code%20style-black-000000.svg)
 
 <p align="center">
 Falca is an intuitive REST APIs framework.<br>
