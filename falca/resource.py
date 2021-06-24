@@ -26,12 +26,12 @@ def create_resource(methods: List[str], view_func: Callable):
         ), f"unknown method {method} (valid value {COMBINED_METHODS!r})"
 
         if iscoroutinefunction(view_func):
-
+            # pylint: disable=unused-argument
             async def responder(self, *args, **kwds):
                 return await view_func(*args, **kwds)
 
         else:
-
+            # pylint: disable=unused-argument
             def responder(self, *args, **kwds):
                 return view_func(*args, **kwds)
 
@@ -45,7 +45,7 @@ def create_resource(methods: List[str], view_func: Callable):
 
         params.insert(0, inspect.Parameter("self", inspect.Parameter.POSITIONAL_ONLY))
         new_sig = old_sig.replace(parameters=params)
-        responder.__signature__ = new_sig  # boom
+        responder.__signature__ = new_sig
         responders["on_" + method.lower()] = wrapper
 
     klass = type(view_func.__name__, (), responders)

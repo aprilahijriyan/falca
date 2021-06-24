@@ -15,6 +15,7 @@ class Config:
     pass
 
 
+k, v = None, None
 for k, v in full_config.items():
     setattr(Config, k, v)
 

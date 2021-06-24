@@ -1,6 +1,6 @@
 from asyncio import iscoroutinefunction
 from functools import wraps
-from typing import Callable
+from typing import Callable, Union
 
 from falcon.asgi.response import Response as ASGIResponse
 from falcon.asgi.ws import WebSocket
@@ -13,6 +13,23 @@ from .request import ASGIRequest, Request
 from .responses import Response
 
 
+def _get_hint_object(
+    atype: object,
+    req_object: Union[Request, ASGIRequest],
+    resp_object: Union[WSGIResponse, ASGIResponse, WebSocket],
+):
+    if type(atype) is not type:
+        atype = type(atype)
+
+    if issubclass(atype, (Request, ASGIRequest)):
+        return req_object
+
+    elif issubclass(atype, (WSGIResponse, ASGIResponse, WebSocket)) and isinstance(
+        resp_object, (WSGIResponse, ASGIResponse, WebSocket)
+    ):
+        return resp_object
+
+
 def inject(func: Callable, *args, **kwargs):
     req_object = args[0]
     resp_object = args[1]
@@ -20,41 +37,14 @@ def inject(func: Callable, *args, **kwargs):
     for key, atype in params.items():
         if is_union_type(atype):
             for atype in atype.__args__:
-                if type(atype) is not type:
-                    atype = type(atype)
-
-                if issubclass(atype, (Request, ASGIRequest)):
-                    kwargs[key] = req_object
-
-                elif issubclass(atype, (WSGIResponse, ASGIResponse)) and isinstance(
-                    resp_object, (WSGIResponse, ASGIResponse)
-                ):
-                    kwargs[key] = resp_object
-
-                elif issubclass(atype, WebSocket) and isinstance(
-                    resp_object, WebSocket
-                ):
-                    kwargs[key] = resp_object
-
-            continue
+                kwargs[key] = _get_hint_object(atype, req_object, resp_object)
 
         elif isinstance(atype, Depends):
             rv = inject(atype, *args, **kwargs)
             kwargs[key] = rv
 
-        if type(atype) is not type:
-            atype = type(atype)
-
-        if issubclass(atype, (Request, ASGIRequest)):
-            kwargs[key] = req_object
-
-        elif issubclass(atype, (WSGIResponse, ASGIResponse)) and isinstance(
-            resp_object, (WSGIResponse, ASGIResponse)
-        ):
-            kwargs[key] = resp_object
-
-        elif issubclass(atype, WebSocket) and isinstance(resp_object, WebSocket):
-            kwargs[key] = resp_object
+        else:
+            kwargs[key] = _get_hint_object(atype, req_object, resp_object)
 
     if isinstance(func, Depends):
         return func(*args[2:], **kwargs)
