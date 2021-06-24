@@ -1,8 +1,8 @@
 # Falca
 
-<p align="center">
-<img width="90%" height="330" src="https://raw.githubusercontent.com/aprilahijriyan/falca/main/falca.png">
-</p>
+![Logo](https://raw.githubusercontent.com/aprilahijriyan/falca/main/falca.png)
+
+![PyPI - Downloads](https://img.shields.io/pypi/dm/falca?color=yellow&logo=python) ![PyPI](https://img.shields.io/pypi/v/falca?color=yellow&logo=python) ![Scrutinizer code quality (GitHub/Bitbucket)](https://img.shields.io/scrutinizer/quality/g/aprilahijriyan/falca/main?logo=scrutinizer) ![Black Formatter](https://img.shields.io/badge/code%20style-black-000000.svg)
 
 <p align="center">
 Falca is an intuitive REST APIs framework.<br>
@@ -12,21 +12,17 @@ Powered by https://falconframework.org/.<br><br>
 
 Goals of this project:
 
-- [x] Validates request body based on type hints.
-- [x] (Pydantic & Marshmallow) support as object serialization and deserialization
-- [x] Request body mapping
-- [x] Nested routers
-- [x] Plugin support
-- [x] Settings (Global Configuration) support
-- [x] Async Support
-- [ ] OpenAPI (Swagger & Redoc)
-- [x] CLI
-- [x] Dependency injection
-- [x] Resource shortcut (`get`, `post`, `put`, `delete`, `websocket`, etc)
-
-Features (unreleased):
-
-- [x] Routing sub-application
+* Validates request body based on type hints.
+* (Pydantic & Marshmallow) support as object serialization and deserialization
+* Request body mapping
+* Nested routers
+* Plugin support
+* Settings (Global Configuration) support
+* Async Support
+* Routing sub-application
+* CLI
+* Dependency injection
+* Resource shortcut (`get`, `post`, `put`, `delete`, `websocket`, etc)
 
 # Contribution
 
