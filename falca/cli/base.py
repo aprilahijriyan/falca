@@ -8,6 +8,7 @@ from rich import print as cprint
 from typer import Context, Exit, Option, Typer
 from typer.models import Default
 
+from ..exceptions import FalcaError
 from ..helpers import import_attr
 from .inspect import inspect_command
 from .runserver import runserver_command
@@ -76,6 +77,12 @@ class Command(Typer):
                     self.registered_commands[idx] = cmd
                     break
 
+        for group in typer.registered_groups:
+            for idx, old in enumerate(self.registered_groups):
+                if old.name == group.name:
+                    self.registered_groups[idx] = group
+                    break
+
     def install_default_commands(self):
         self.command("inspect")(inspect_command)
         self.command("runserver")(runserver_command)
@@ -85,11 +92,19 @@ class Command(Typer):
         )(shell_command)
 
     def load_app(self):
+        from ..app import ASGI, WSGI
+
         try:
             os.chdir(os.getcwd())
             sys.path.insert(0, os.getcwd())
             src = os.environ.get("FALCA_APP", "app.app")
             app = import_attr(src)
+            if callable(app):
+                app = app()
+
+            if not isinstance(app, (WSGI, ASGI)):
+                raise FalcaError(f"Invalid application type {app!r}")
+
             return app
 
         except ImportError:
