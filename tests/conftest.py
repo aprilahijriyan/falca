@@ -1,3 +1,5 @@
+from os import environ
+
 import pytest
 
 from falca.app import ASGI, WSGI
@@ -14,14 +16,30 @@ def create_or_get(key, klass):
     return app
 
 
+def _asgi_app():
+    return create_or_get("asgi_app", ASGI)
+
+
+def _wsgi_app():
+    return create_or_get("wsgi_app", WSGI)
+
+
 @pytest.fixture
 def asgi_app():
-    return create_or_get("asgi_app", ASGI)
+    return _asgi_app()
 
 
 @pytest.fixture
 def wsgi_app():
-    return create_or_get("wsgi_app", WSGI)
+    return _wsgi_app()
+
+
+@pytest.fixture
+def cli():
+    environ["FALCA_APP"] = "tests.conftest._wsgi_app"
+    from falca.cli.app import cli
+
+    return cli
 
 
 @pytest.fixture
