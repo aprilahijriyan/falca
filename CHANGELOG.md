@@ -169,3 +169,45 @@
 * ⚡ General Update:  cache plugin. [aprilahijriyan]
 
 * ⚡ General Update:  Added parameter notation. [aprilahijriyan]
+
+## v2.2.0 (2021-06-26)
+
+### ✨ New
+
+* Support group command merging and importing functions via the FALCA_APP env. [aprilahijriyan]
+
+* Support for mounting sub-application. [aprilahijriyan]
+
+* Support adding function resources to add_route. [aprilahijriyan]
+
+* Support installing plugins via objects. [aprilahijriyan]
+
+### 🎨 Improved
+
+* Code optimization from the scrutinizer-ci report. [aprilahijriyan]
+
+* Added FileResponse and improved template rendering in HTMLResponse. [aprilahijriyan]
+
+### 🐛 Fix
+
+* Update major version (due to commit 70d309740b9f93076ad290afca3762deb24696e6) [aprilahijriyan]
+
+* Separate 'method' argument to keyword argument. [aprilahijriyan]
+
+* Pydantic validation error message. [aprilahijriyan]
+
+### ✔️ Tests
+
+* Cli. [aprilahijriyan]
+
+* Responses. [aprilahijriyan]
+
+### 📖 DOC
+
+* Add more badges. [aprilahijriyan]
+
+* Added badges and minor fixes. [aprilahijriyan]
+
+* Add unreleased features. [aprilahijriyan]
+
+* Add pip installation guide. [aprilahijriyan]
