@@ -7,7 +7,7 @@
 <p align="center">
 Falca is an intuitive REST APIs framework.<br>
 Powered by https://falconframework.org/.<br><br>
-:warning: <i><strong>Production ready soon!</strong></i> :construction:<br>
+:warning: <i><strong>This is a BETA version please don't use it in a production environment. Thank you!</strong></i> :construction:<br>
 </p>
 
 Goals of this project:
