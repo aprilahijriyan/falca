@@ -20,36 +20,36 @@ class Marshmallow(Depends):
 
 
 class Query(Marshmallow):
-    def __call__(self, *args, request: Union[Request, ASGIRequest]) -> dict:
+    def __call__(self, request: Union[Request, ASGIRequest]) -> dict:
         data = self.schema.load(request.params)
         return data
 
 
 class Form(Marshmallow):
-    def __call__(self, *args, request: Union[Request, ASGIRequest]) -> dict:
+    def __call__(self, request: Union[Request, ASGIRequest]) -> dict:
         data = self.schema.load(request.forms)
         return data
 
 
 class File(Marshmallow):
-    def __call__(self, *args, request: Union[Request, ASGIRequest]) -> dict:
+    def __call__(self, request: Union[Request, ASGIRequest]) -> dict:
         data = self.schema.load(request.files)
         return data
 
 
 class Body(Marshmallow):
-    def __call__(self, *args, request: Union[Request, ASGIRequest]) -> dict:
+    def __call__(self, request: Union[Request, ASGIRequest]) -> dict:
         data = self.schema.load(request.json)
         return data
 
 
 class Header(Marshmallow):
-    def __call__(self, *args, request: Union[Request, ASGIRequest]) -> dict:
+    def __call__(self, request: Union[Request, ASGIRequest]) -> dict:
         data = self.schema.load(request.headers)
         return data
 
 
 class Cookie(Marshmallow):
-    def __call__(self, *args, request: Union[Request, ASGIRequest]) -> dict:
+    def __call__(self, request: Union[Request, ASGIRequest]) -> dict:
         data = self.schema.load(request.cookies)
         return data
