@@ -99,7 +99,7 @@ class Command(Typer):
             sys.path.insert(0, os.getcwd())
             src = os.environ.get("FALCA_APP", "app.app")
             app = import_attr(src)
-            if callable(app):
+            if not isinstance(app, (WSGI, ASGI)) and callable(app):
                 app = app()
 
             if not isinstance(app, (WSGI, ASGI)):
