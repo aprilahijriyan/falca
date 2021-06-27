@@ -44,7 +44,9 @@ def inject(func: Callable, *args, **kwargs):
             kwargs[key] = rv
 
         else:
-            kwargs[key] = _get_hint_object(atype, req_object, resp_object)
+            kwargs[key] = (
+                _get_hint_object(atype, req_object, resp_object) or kwargs[key]
+            )
 
     if isinstance(func, Depends):
         return func(*args[2:], **kwargs)
@@ -57,7 +59,7 @@ def flavor(func: Callable):
 
         async def responder(*args, **kwargs):
             kwargs = inject(func, *args, **kwargs)
-            resp = await func(*args[2:], **kwargs)
+            resp = await func(**kwargs)
             if isinstance(resp, Response):
                 resp.build(args[0], args[1])
 
@@ -65,7 +67,7 @@ def flavor(func: Callable):
 
         def responder(*args, **kwargs):
             kwargs = inject(func, *args, **kwargs)
-            resp = func(*args[2:], **kwargs)
+            resp = func(**kwargs)
             if isinstance(resp, Response):
                 resp.build(args[0], args[1])
 
