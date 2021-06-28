@@ -13,6 +13,8 @@ def test_dumps():
     result = json.dumps(d)
     resp = '{"n": 1, "s": {"id": 2}}'
     try:
+        import orjson  # noqa
+
         resp = resp.replace(" ", "")
     except ImportError:
         pass
