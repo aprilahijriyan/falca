@@ -24,6 +24,10 @@ def _wsgi_app():
     return create_or_get("wsgi_app", WSGI)
 
 
+def _fake_app():
+    return
+
+
 @pytest.fixture
 def asgi_app():
     return _asgi_app()

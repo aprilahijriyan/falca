@@ -18,9 +18,6 @@ def _get_hint_object(
     req_object: Union[Request, ASGIRequest],
     resp_object: Union[WSGIResponse, ASGIResponse, WebSocket],
 ):
-    if type(atype) is not type:
-        atype = type(atype)
-
     if issubclass(atype, (Request, ASGIRequest)):
         return req_object
 

@@ -13,11 +13,9 @@ class ResourceMiddleware(Middleware):
     def process_resource(
         self, req: Request, resp: Union[Response, WebSocket], resource: object, *args
     ):
-        if resource is None:
-            return
-
-        req.context.app = self.app
-        req.context.templates = self.app.template_lookup
+        if resource is not None:
+            req.context.app = self.app
+            req.context.templates = self.app.template_lookup
 
     async def process_resource_async(
         self, req: ASGIRequest, resp: ASGIResponse, resource: object, *args

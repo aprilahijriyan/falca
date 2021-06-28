@@ -12,36 +12,48 @@ class Pydantic(Depends):
 
 
 class Query(Pydantic):
-    def __call__(self, request: Union[Request, ASGIRequest]) -> dict:
+    def __call__(
+        self, request: Union[Request, ASGIRequest]
+    ) -> dict:  # pragma: no cover
         data = self.schema.parse_obj(request.params)
         return data.dict()
 
 
 class Form(Pydantic):
-    def __call__(self, request: Union[Request, ASGIRequest]) -> dict:
+    def __call__(
+        self, request: Union[Request, ASGIRequest]
+    ) -> dict:  # pragma: no cover
         data = self.schema.parse_obj(request.forms)
         return data.dict()
 
 
 class File(Pydantic):
-    def __call__(self, request: Union[Request, ASGIRequest]) -> dict:
+    def __call__(
+        self, request: Union[Request, ASGIRequest]
+    ) -> dict:  # pragma: no cover
         data = self.schema.parse_obj(request.files)
         return data.dict()
 
 
 class Body(Pydantic):
-    def __call__(self, request: Union[Request, ASGIRequest]) -> dict:
+    def __call__(
+        self, request: Union[Request, ASGIRequest]
+    ) -> dict:  # pragma: no cover
         data = self.schema.parse_obj(request.json)
         return data.dict()
 
 
 class Header(Pydantic):
-    def __call__(self, request: Union[Request, ASGIRequest]) -> dict:
+    def __call__(
+        self, request: Union[Request, ASGIRequest]
+    ) -> dict:  # pragma: no cover
         data = self.schema.parse_obj(request.headers)
         return data.dict()
 
 
 class Cookie(Pydantic):
-    def __call__(self, request: Union[Request, ASGIRequest]) -> dict:
+    def __call__(
+        self, request: Union[Request, ASGIRequest]
+    ) -> dict:  # pragma: no cover
         data = self.schema.parse_obj(request.cookies)
         return data.dict()

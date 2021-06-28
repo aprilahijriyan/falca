@@ -8,7 +8,7 @@ def runserver_command(
     ctx: Context,
     host: str = Option("127.0.0.1", help="Hostname"),
     port: int = Option(9999, help="Port"),
-):
+):  # pragma: no cover
     """
     Run the application
     """

@@ -17,6 +17,9 @@ def parse_tree(tree: Tree, routes: List[CompiledRouterNode], *, prefix: str = No
             endpoint = "/" + endpoint.lstrip(prefix)
 
         method_map = node.method_map
+        if method_map is None:
+            continue
+
         child = tree.add(f":bookmark_tabs:  {endpoint} ({resource})", highlight=True)
         table = Table(show_lines=True)
         table.add_column("Method")

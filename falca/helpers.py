@@ -26,7 +26,7 @@ def import_attr(module: str):
     return getattr(mod, name)
 
 
-def get_root_path(import_name: str):
+def get_root_path(import_name: str):  # pragma: no cover
     """
     This is taken from https://github.com/pallets/flask/blob/master/src/flask/scaffold.py#L699
     """
@@ -76,9 +76,6 @@ def get_argnotations(func: Callable) -> Dict[str, type]:
     params = {}
     for p in sig.parameters.values():
         name = p.name
-        if name == "self":
-            continue
-
         atype = p.annotation
         default = p.default
         if isinstance(default, Depends):
