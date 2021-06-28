@@ -8,48 +8,60 @@ from .base import Depends
 class Marshmallow(Depends):
     def __init__(self, schema: Union[Schema, Dict[str, Any]]) -> None:
         if isinstance(schema, dict):
-            schema = Schema.from_dict(schema)
+            schema = Schema.from_dict(schema)()
         elif type(schema) is DefaultSchemaMeta:
             schema = schema()
         elif isinstance(schema, Schema):
             pass
-        else:
+        else:  # pragma: no cover
             raise TypeError(f"schema type must be of type {Schema!r} or dict")
 
         self.schema: Schema = schema
 
 
 class Query(Marshmallow):
-    def __call__(self, request: Union[Request, ASGIRequest]) -> dict:
+    def __call__(
+        self, request: Union[Request, ASGIRequest]
+    ) -> dict:  # pragma: no cover
         data = self.schema.load(request.params)
         return data
 
 
 class Form(Marshmallow):
-    def __call__(self, request: Union[Request, ASGIRequest]) -> dict:
+    def __call__(
+        self, request: Union[Request, ASGIRequest]
+    ) -> dict:  # pragma: no cover
         data = self.schema.load(request.forms)
         return data
 
 
 class File(Marshmallow):
-    def __call__(self, request: Union[Request, ASGIRequest]) -> dict:
+    def __call__(
+        self, request: Union[Request, ASGIRequest]
+    ) -> dict:  # pragma: no cover
         data = self.schema.load(request.files)
         return data
 
 
 class Body(Marshmallow):
-    def __call__(self, request: Union[Request, ASGIRequest]) -> dict:
+    def __call__(
+        self, request: Union[Request, ASGIRequest]
+    ) -> dict:  # pragma: no cover
         data = self.schema.load(request.json)
         return data
 
 
 class Header(Marshmallow):
-    def __call__(self, request: Union[Request, ASGIRequest]) -> dict:
+    def __call__(
+        self, request: Union[Request, ASGIRequest]
+    ) -> dict:  # pragma: no cover
         data = self.schema.load(request.headers)
         return data
 
 
 class Cookie(Marshmallow):
-    def __call__(self, request: Union[Request, ASGIRequest]) -> dict:
+    def __call__(
+        self, request: Union[Request, ASGIRequest]
+    ) -> dict:  # pragma: no cover
         data = self.schema.load(request.cookies)
         return data
