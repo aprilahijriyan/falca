@@ -60,7 +60,7 @@ class Command(Typer):
             add_completion=add_completion,
         )
         self.install_default_commands()
-        for ep in iter_entry_points("falca.commands"):
+        for ep in iter_entry_points("falca.commands"):  # pragma: no cover
             cmd = ep.load()
             if isinstance(cmd, Typer):
                 self.add_typer(cmd)
@@ -119,7 +119,7 @@ class Command(Typer):
         ),
     ):
 
-        if ctx.resilient_parsing:
+        if ctx.resilient_parsing:  # pragma: no cover
             return
 
         if version:

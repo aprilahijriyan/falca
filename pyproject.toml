@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "falca"
-version = "2.2.2"
+version = "2.3.1"
 description = "Falca is an intuitive REST APIs framework based on the falcon framework."
 authors = ["aprilahijriyan <hijriyan23@gmail.com>"]
 license = "MIT"
@@ -33,9 +33,15 @@ typing-inspect = "^0.6.0"
 pre-commit = "^2.12.1"
 httpie = "^2.4.0"
 pylint = "^2.8.2"
+pytest = "^6.2.4"
+pytest-asyncio = "^0.15.1"
+marshmallow = "^3.12.1"
+pydantic = "^1.8.2"
 gitchangelog = "^3.0.4"
 pystache = "^0.5.4"
 tox = "^3.23.1"
+pytest-cov = "^2.12.1"
+pytest-order = "^1.0.0"
 
 [tool.poetry.scripts]
 

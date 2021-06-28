@@ -9,9 +9,7 @@ def test_marshmallow(wsgi_app, wsgi_client):
     from falca.depends.marshmallow import Body, Form, Query
     from falca.serializers.marshmallow import Schema
 
-    class LimitOffsetSchema(Schema):
-        limit = fields.Int()
-        offset = fields.Int()
+    LimitOffsetSchema = {"limit": fields.Int(), "offset": fields.Int()}
 
     class ArticleSchema(Schema):
         title = fields.Str(required=True)
@@ -27,7 +25,7 @@ def test_marshmallow(wsgi_app, wsgi_client):
 
             return JSONResponse(query)
 
-        def on_post(self, body: dict = Body(ArticleSchema)):
+        def on_post(self, body: dict = Body(ArticleSchema())):
             """
             Test json body
             """

@@ -55,6 +55,15 @@ def test_settings(wsgi_app, wsgi_client):
     resp = wsgi_client.get("/settings")
     assert isinstance(resp.json, dict)
 
+    class Resource:
+        def on_get(self, foo: int = Settings("foo")):
+            return JSONResponse({"foo": foo})
+
+    wsgi_app.settings["foo"] = 1
+    wsgi_app.add_route("/settings/foo", Resource())
+    resp = wsgi_client.get("/settings/foo")
+    assert resp.json["foo"] == 1
+
 
 def test_function(wsgi_app, wsgi_client):
     def get_kebab_size(req: Request):

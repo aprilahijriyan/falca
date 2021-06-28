@@ -6,7 +6,7 @@ from traitlets.config.loader import Config
 from typer import Context
 
 
-def shell_command(ctx: Context):
+def shell_command(ctx: Context):  # pragma: no cover
     """
     Run shell
     """

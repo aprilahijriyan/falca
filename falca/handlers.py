@@ -11,12 +11,12 @@ from .request import ASGIRequest, Request
 
 try:
     from marshmallow.exceptions import ValidationError as MarshmallowValidationError
-except ImportError:
+except ImportError:  # pragma: no cover
     MarshmallowValidationError = None
 
 try:
     from pydantic.error_wrappers import ValidationError as PydanticValidationError
-except ImportError:
+except ImportError:  # pragma: no cover
     PydanticValidationError = None
 
 
@@ -55,7 +55,7 @@ if MarshmallowValidationError:
         exc: MarshmallowValidationError,
         *args,
     ):
-        marshmallow_handler(req, resp, exc, *args)
+        marshmallow_handler(req, resp, exc, *args)  # pragma: no cover
 
 
 if PydanticValidationError:
@@ -79,4 +79,4 @@ if PydanticValidationError:
         exc: PydanticValidationError,
         *args,
     ):
-        pydantic_handler(req, resp, exc, *args)
+        pydantic_handler(req, resp, exc, *args)  # pragma: no cover

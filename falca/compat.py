@@ -6,7 +6,7 @@ from functools import partial
 
 try:
     from pydantic import BaseModel as PydanticSchema
-except ImportError:
+except ImportError:  # pragma: no cover
     PydanticSchema = None
 
 
@@ -29,7 +29,7 @@ try:
         return _dumps(*args, **kwds).decode()
 
 
-except ImportError:
+except ImportError:  # pragma: no cover
     try:
         import rapidjson as json
 
