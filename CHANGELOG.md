@@ -211,3 +211,35 @@
 * Add unreleased features. [aprilahijriyan]
 
 * Add pip installation guide. [aprilahijriyan]
+
+## v2.3.1 (2021-06-29)
+
+### 🎨 Improved
+
+* Add coverage tool. [aprilahijriyan]
+
+* Include poetry.lock to remote repo. [aprilahijriyan]
+
+* Use tox as a test environment. [aprilahijriyan]
+
+* Remove the *args argument on 'falca.depends.*' [aprilahijriyan]
+
+### 🐛 Fix
+
+* Add our scrutinizer config. [aprilahijriyan]
+
+* Missing noqa notes. [aprilahijriyan]
+
+* Marshmallow doesn't work with schema dictionaries (close #12) [aprilahijriyan]
+
+* Cannot run app with falca-cli #9. [aprilahijriyan]
+
+* Invalid Path Parameter #10. [aprilahijriyan]
+
+### ✔️ Tests
+
+* Path parameter. [aprilahijriyan]
+
+### Other
+
+* 📦 Configuration:  remove pypy in tox.ini. [aprilahijriyan]
