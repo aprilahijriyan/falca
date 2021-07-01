@@ -37,7 +37,7 @@ def inject(func: Callable, *args, **kwargs):
                 kwargs[key] = _get_hint_object(atype, req_object, resp_object)
 
         elif isinstance(atype, Depends):
-            rv = inject(atype, *args, **kwargs)
+            rv = inject(atype, *args)
             kwargs[key] = rv
 
         else:
