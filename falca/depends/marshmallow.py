@@ -1,67 +1,66 @@
-from typing import Any, Dict, Union
+from abc import ABCMeta, abstractmethod
+from typing import Any, Dict, Optional, Union
+
+from six import with_metaclass
 
 from ..request import ASGIRequest, Request
 from ..serializers.marshmallow import DefaultSchemaMeta, Schema
 from .base import Depends
 
 
-class Marshmallow(Depends):
-    def __init__(self, schema: Union[Schema, Dict[str, Any]]) -> None:
+class Marshmallow(with_metaclass(ABCMeta, Depends)):
+    def __init__(self, schema: Optional[Union[Schema, Dict[str, Any]]] = None) -> None:
         if isinstance(schema, dict):
             schema = Schema.from_dict(schema)()
         elif type(schema) is DefaultSchemaMeta:
             schema = schema()
-        elif isinstance(schema, Schema):
+        elif isinstance(schema, Schema) or schema is None:
             pass
         else:  # pragma: no cover
             raise TypeError(f"schema type must be of type {Schema!r} or dict")
 
         self.schema: Schema = schema
 
+    @abstractmethod
+    def get_data(self, request: Union[Request, ASGIRequest]) -> dict:
+        pass
+
+    def validate(self, request: Union[Request, ASGIRequest]):
+        data = self.get_data(request)
+        if self.schema is not None:
+            data = self.schema.load(data)
+        return data
+
+    def __call__(self, request: Union[Request, ASGIRequest]) -> dict:
+        data = self.validate(request)
+        return data
+
 
 class Query(Marshmallow):
-    def __call__(
-        self, request: Union[Request, ASGIRequest]
-    ) -> dict:  # pragma: no cover
-        data = self.schema.load(request.params)
-        return data
+    def get_data(self, request: Union[Request, ASGIRequest]) -> dict:
+        return request.params
 
 
 class Form(Marshmallow):
-    def __call__(
-        self, request: Union[Request, ASGIRequest]
-    ) -> dict:  # pragma: no cover
-        data = self.schema.load(request.forms)
-        return data
+    def get_data(self, request: Union[Request, ASGIRequest]) -> dict:
+        return request.forms
 
 
 class File(Marshmallow):
-    def __call__(
-        self, request: Union[Request, ASGIRequest]
-    ) -> dict:  # pragma: no cover
-        data = self.schema.load(request.files)
-        return data
+    def get_data(self, request: Union[Request, ASGIRequest]) -> dict:
+        return request.files
 
 
 class Body(Marshmallow):
-    def __call__(
-        self, request: Union[Request, ASGIRequest]
-    ) -> dict:  # pragma: no cover
-        data = self.schema.load(request.json)
-        return data
+    def get_data(self, request: Union[Request, ASGIRequest]) -> dict:
+        return request.json
 
 
 class Header(Marshmallow):
-    def __call__(
-        self, request: Union[Request, ASGIRequest]
-    ) -> dict:  # pragma: no cover
-        data = self.schema.load(request.headers)
-        return data
+    def get_data(self, request: Union[Request, ASGIRequest]) -> dict:
+        return request.headers
 
 
 class Cookie(Marshmallow):
-    def __call__(
-        self, request: Union[Request, ASGIRequest]
-    ) -> dict:  # pragma: no cover
-        data = self.schema.load(request.cookies)
-        return data
+    def get_data(self, request: Union[Request, ASGIRequest]) -> dict:
+        return request.cookies
