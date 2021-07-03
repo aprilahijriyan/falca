@@ -80,6 +80,14 @@ def test_marshmallow(wsgi_app, wsgi_client):
     test_form()
     test_error()
 
+    class Resource:
+        def on_get(self, query: dict = Query()):
+            return JSONResponse(query)
+
+    wsgi_app.add_route("/uhh", Resource())
+    resp = wsgi_client.get("/uhh?hello=1")
+    assert resp.json == {"hello": "1"}
+
 
 @mark.asyncio
 async def test_pydantic(asgi_app, asgi_client):
@@ -158,3 +166,11 @@ async def test_pydantic(asgi_app, asgi_client):
     await test_json()
     await test_form()
     await test_error()
+
+    class Resource:
+        async def on_get(self, query: dict = Query()):
+            return JSONResponse(query)
+
+    asgi_app.add_route("/uhh", Resource())
+    resp = await asgi_client.get("/uhh?hello=1")
+    assert resp.json == {"hello": "1"}
