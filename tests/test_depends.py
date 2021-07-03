@@ -1,7 +1,7 @@
 import logging
 from typing import Union
 
-from marshmallow import fields
+from marshmallow import fields, validate
 
 from falca.app import ASGI, WSGI
 from falca.depends import Plugin, Settings
@@ -95,8 +95,11 @@ def test_function(wsgi_app, wsgi_client):
 
 
 def test_mix(wsgi_app, wsgi_client, caplog):
-    def get_kebab_size(req: Request):
-        size = req.params.get("size", "jumbo")
+    class KebabSchema(Schema):
+        size = fields.String(validate=validate.OneOf(["small", "medium", "jumbo"]))
+
+    def get_kebab_size(req: Request, query: dict = Query(KebabSchema)):
+        size = query.get("size", "jumbo")
         return size
 
     class Resource:
@@ -133,6 +136,11 @@ def test_mix(wsgi_app, wsgi_client, caplog):
         assert resp.json["kebab_size"] == "jumbo"
 
     assert "can you see me?" in caplog.text
+    resp = wsgi_client.get("/depends/mix/wohoo?size=invalid")
+    assert resp.json == {
+        "status": {"code": 422, "description": "Unprocessable Entity"},
+        "data": {"size": ["Must be one of: small, medium, jumbo."]},
+    }
     json = {
         "title": "Awesome Falcon",
         "content": "Falcon is great framework!",
