@@ -30,6 +30,8 @@ Goals of this project:
 
 if you want to contribute like bug fixes, feature additions, etc. Please read our [contribution guidelines](https://github.com/aprilahijriyan/falca/blob/main/CONTRIBUTING.md).
 
+Also bug reports are welcome :)
+
 # Installation
 
 Using `pip`:
