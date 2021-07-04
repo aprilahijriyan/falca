@@ -243,3 +243,21 @@
 ### Other
 
 * 📦 Configuration:  remove pypy in tox.ini. [aprilahijriyan]
+
+## v2.4.0 (2021-07-04)
+
+### ✨ New
+
+* Optional schema for Pydantic and Marshmallow dependencies. [aprilahijriyan]
+
+### 🎨 Improved
+
+* Add query validation test on nested dependency. [aprilahijriyan]
+
+### 🐛 Fix
+
+* Can't mix dependencies (close #13) [aprilahijriyan]
+
+### 📖 DOC
+
+* Add bug reporting note. [aprilahijriyan]
