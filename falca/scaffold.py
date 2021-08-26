@@ -4,7 +4,6 @@ from typing import List, Tuple, Union
 
 from falcon.asgi import App as ASGIApp
 from falcon.constants import MEDIA_JSON, WebSocketPayloadType
-from mako.lookup import TemplateLookup
 from typer import Typer
 
 from . import handlers
@@ -18,6 +17,7 @@ from .middleware.resource import ResourceMiddleware
 from .plugins.manager import PluginManager
 from .router import AsyncRouter, Router
 from .settings import Settings
+from .templates import MakoTemplate
 
 
 class Scaffold:
@@ -52,7 +52,7 @@ class Scaffold:
 
         templates.insert(0, os.path.join(os.path.dirname(__file__), "templates"))
         self.template_folders = templates
-        self.template_lookup = TemplateLookup(templates)
+        self.template_engine = self.get_template_engine(templates)
         self.plugins = self.plugins_class(self)
         for prefix, folder in static_folders:
             if not folder.startswith("/"):
@@ -73,6 +73,9 @@ class Scaffold:
         self.add_middleware(JsonParserMiddleware())
         self.add_middleware(FileParserMiddleware())
         self._set_default_error_handlers()
+
+    def get_template_engine(self, templates: List[str]):
+        return MakoTemplate(templates)
 
     def route(self, path: str, methods: List[str] = ["get", "head"]):
         def decorated(func):

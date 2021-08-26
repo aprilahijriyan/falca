@@ -15,7 +15,7 @@ class ResourceMiddleware(Middleware):
     ):
         if resource is not None:
             req.context.app = self.app
-            req.context.templates = self.app.template_lookup
+            req.context.template_engine = self.app.template_engine
 
     async def process_resource_async(
         self, req: ASGIRequest, resp: ASGIResponse, resource: object, *args

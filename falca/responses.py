@@ -88,7 +88,7 @@ class HTMLResponse(Response):
         super().__init__(content, **kwds)
 
     def render(self, req: Union[Request, ASGIRequest]):
-        t = req.context.templates.get_template(self.content)
+        t = req.context.template_engine.get_template(self.content)
         html = t.render(**self.context)
         return html
 
